@@ -155,11 +155,21 @@
     display:grid; grid-template-columns:repeat(3, 1fr); gap:8px;
   }
   .qt-btn{
+    position:relative; overflow:hidden;
     padding:14px 6px; border-radius:9px; border:1px solid var(--hairline);
     background:var(--bg-raised); color:var(--ink); cursor:pointer;
     font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:16px;
     letter-spacing:0.02em; text-align:center;
   }
+  .qt-fill{
+    position:absolute; top:0; left:0; bottom:0; width:0%;
+    background:var(--amber); opacity:0.85; z-index:0;
+    transition: width 0.9s linear;
+  }
+  .qt-fill.warning{ background:var(--slate); }
+  .qt-fill.orange{ background:var(--coral); }
+  .qt-fill.critical, .qt-fill.overtime{ background:var(--danger); }
+  .qt-btn-label{ position:relative; z-index:1; }
   .qt-btn:active{ background:var(--slate); color:var(--bg); }
 </style>
 </head>
@@ -556,6 +566,7 @@ function renderBlockList(){
 
 function selectBlock(i, keepState){
   quickTimerMinutes = null;
+  resetQuickTimerFills();
   selectedIdx = i;
   const blocks = getCurrentBlocks();
   const b = blocks[i];
@@ -637,14 +648,38 @@ function updateDisplay(){
   }
 }
 
+function currentTier(){
+  if(remainingSec <= 0) return 'overtime';
+  if(remainingSec <= 60) return 'critical';
+  if(remainingSec <= 150) return 'orange';
+  if(remainingSec <= 300) return 'warning';
+  return '';
+}
+
 function updateFillBar(){
-  if(selectedIdx === null) return;
-  const fillEl = document.getElementById('fill-' + selectedIdx);
-  if(!fillEl) return;
   const elapsed = totalSec - remainingSec;
   const pct = Math.min(100, Math.max(0, (elapsed/totalSec)*100));
-  fillEl.style.width = pct + '%';
-  fillEl.classList.toggle('overtime', remainingSec <= 0);
+  const tier = currentTier();
+  if(selectedIdx !== null){
+    const fillEl = document.getElementById('fill-' + selectedIdx);
+    if(fillEl){
+      fillEl.style.width = pct + '%';
+      fillEl.classList.toggle('overtime', remainingSec <= 0);
+    }
+  } else if(quickTimerMinutes !== null){
+    const qtFill = document.getElementById('qt-fill-' + quickTimerMinutes);
+    if(qtFill){
+      qtFill.style.width = pct + '%';
+      qtFill.className = 'qt-fill' + (tier ? ' ' + tier : '');
+    }
+  }
+}
+
+function resetQuickTimerFills(){
+  document.querySelectorAll('.qt-fill').forEach(el=>{
+    el.style.width = '0%';
+    el.className = 'qt-fill';
+  });
 }
 
 function tick(){
@@ -775,6 +810,7 @@ function startQuickTimer(minutes){
   syncAutoToggleUI();
   selectedIdx = null;
   quickTimerMinutes = minutes;
+  resetQuickTimerFills();
   totalSec = minutes*60;
   remainingSec = totalSec;
   warned5 = false;
@@ -810,7 +846,8 @@ function renderQuickTimerButtons(){
   options.forEach(opt=>{
     const btn = document.createElement('div');
     btn.className = 'qt-btn';
-    btn.textContent = opt.label;
+    btn.setAttribute('data-minutes', opt.minutes);
+    btn.innerHTML = `<div class="qt-fill" id="qt-fill-${opt.minutes}"></div><div class="qt-btn-label">${opt.label}</div>`;
     btn.onclick = ()=> startQuickTimer(opt.minutes);
     grid.appendChild(btn);
   });
