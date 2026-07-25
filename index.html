@@ -219,7 +219,7 @@ const catColor = {
 const MONDAY_A = [
   {t:'PLAN | Day', s:'09:00', dur:15, cat:'plan'},
   {t:'MEET | PREP', s:'09:15', dur:30, cat:'team'},
-  {t:'Team Meeting Locked In', s:'10:00', dur:60, cat:'org'},
+  {t:'Team Meeting Locked In', s:'10:00', dur:60, cat:'org', central:true},
   {t:'TEAM | Development', s:'11:15', dur:60, cat:'team'},
   {t:'ADMIN | Schedule', s:'13:00', dur:60, cat:'admin'},
   {t:'Associate Development Time', s:'14:30', dur:60, cat:'org'},
@@ -227,8 +227,8 @@ const MONDAY_A = [
 ];
 const MONDAY_B = [
   {t:'PLAN | Day', s:'09:00', dur:15, cat:'plan'},
-  {t:'Team Lead', s:'09:30', dur:30, cat:'org'},
-  {t:'Team Meeting Extended', s:'10:00', dur:90, cat:'org'},
+  {t:'Team Lead', s:'09:30', dur:30, cat:'org', central:true},
+  {t:'Team Meeting Extended', s:'10:00', dur:90, cat:'org', central:true},
   {t:'ADMIN | Schedule', s:'13:00', dur:60, cat:'admin'},
   {t:'TEAM | Development', s:'14:30', dur:60, cat:'team'},
   {t:'🟢 OPEN | Flex', s:'15:30', dur:60, cat:'open'},
@@ -265,8 +265,8 @@ const THURSDAY_BLOCKS = [
   {t:'🛠️ BUILD | Slides', s:'10:15', dur:60, cat:'build'},
   {t:'PREP | Weekend', s:'11:15', dur:105, cat:'build'},
   {t:'ADMIN | PCO', s:'13:00', dur:15, cat:'admin'},
-  {t:'Team Time', s:'13:15', dur:60, cat:'org'},
-  {t:'Walk Through', s:'14:15', dur:60, cat:'org'},
+  {t:'Team Time', s:'13:15', dur:60, cat:'org', central:true},
+  {t:'Walk Through', s:'14:15', dur:60, cat:'org', central:true},
   {t:'BW/MA 1:1', s:'15:15', dur:45, cat:'org'},
 ];
 const SATURDAY_BLOCKS = [
