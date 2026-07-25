@@ -237,7 +237,7 @@
 </div>
 
 <script>
-const APP_VERSION = '20260725T172647Z';
+const APP_VERSION = '20260725T173058Z';
 const catColor = {
   plan:'var(--violet)', build:'var(--amber)', team:'var(--teal)',
   content:'var(--coral)', admin:'var(--slate)', open:'var(--green)',
@@ -796,10 +796,10 @@ function checkForUpdate(){
 }
 
 document.addEventListener('visibilitychange', ()=>{
-  if(document.visibilityState === 'visible') checkForUpdate();
+  if(document.visibilityState === 'visible'){ checkForUpdate(); autoWatchTick(); }
 });
-window.addEventListener('focus', checkForUpdate);
-window.addEventListener('pageshow', checkForUpdate);
+window.addEventListener('focus', ()=>{ checkForUpdate(); autoWatchTick(); });
+window.addEventListener('pageshow', ()=>{ checkForUpdate(); autoWatchTick(); });
 setInterval(checkForUpdate, 60000);
 
 document.getElementById('syncBtn').onclick = ()=> location.reload();
