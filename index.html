@@ -27,6 +27,15 @@
   .sub{ font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--org); letter-spacing:0.08em; text-transform:uppercase; }
   h1{ font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:28px; letter-spacing:0.02em; text-transform:uppercase; margin:2px 0 14px; }
 
+  .masthead-row{ display:flex; align-items:flex-start; justify-content:space-between; gap:10px; }
+  .sync-btn{
+    flex-shrink:0; width:40px; height:40px; border-radius:10px;
+    background:var(--bg-raised); border:1px solid var(--hairline); color:var(--ink);
+    font-size:20px; cursor:pointer; display:flex; align-items:center; justify-content:center;
+    margin-top:2px;
+  }
+  .sync-btn:active{ background:var(--slate); color:var(--bg); transform:rotate(45deg); }
+
   .clock-panel{
     background:var(--bg-raised); border:1px solid var(--hairline); border-radius:12px;
     padding:16px; text-align:center; margin-bottom:18px;
@@ -175,8 +184,13 @@
 </head>
 <body>
 <div class="wrap">
-  <div class="sub">Northland &middot; Block Timer</div>
-  <h1>Stay On Time</h1>
+  <div class="masthead-row">
+    <div>
+      <div class="sub">Northland &middot; Block Timer</div>
+      <h1>Stay On Time</h1>
+    </div>
+    <button id="syncBtn" class="sync-btn" title="Refresh">&#8635;</button>
+  </div>
 
   <div class="clock-panel">
     <div class="clock-label">Current Time</div>
@@ -300,9 +314,6 @@ const SUNDAY_BLOCKS = [
 // One-off, non-recurring confirmed meetings, keyed by date "YYYY-MM-DD".
 // These get merged into that specific day's block list, sorted by start time.
 const ONEOFF_BLOCKS = {
-  '2026-07-25': [
-    {t:'TEST | Auto-Start Check', s:'12:05', dur:5, cat:'dream'},
-  ],
   '2026-07-27': [
     {t:'ATM Catoosa Pickup & Lunch In', s:'12:00', dur:120, cat:'org'},
   ],
@@ -701,12 +712,12 @@ function resetQuickTimerFills(){
 
 function tick(){
   remainingSec -= 1;
-  if(remainingSec === 900 && !warned15){
+  if(remainingSec <= 900 && remainingSec > 300 && !warned15){
     warned15 = true;
     beep(700,180,0.28);
     vibrate([150]);
   }
-  if(remainingSec === 300 && !warned5){
+  if(remainingSec <= 300 && remainingSec > 0 && !warned5){
     warned5 = true;
     tripleBeep();
     vibrate([200,100,200,100,200]);
@@ -757,6 +768,8 @@ document.getElementById('btnReset').onclick = ()=>{
   if(selectedIdx===null) return;
   selectBlock(selectedIdx);
 };
+
+document.getElementById('syncBtn').onclick = ()=> location.reload();
 
 document.getElementById('prevWeek').onclick = ()=>{
   autoStartEnabled = false;
