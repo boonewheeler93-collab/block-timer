@@ -187,7 +187,7 @@
   </div>
 
   <div class="footnote">
-    <b>Note:</b> Every block in your real week is here \u2014 services, rehearsals, campus recurring meetings, and confirmed one-off meetings, all auto-startable. Known Doc Update, Call Times, and pure FYI reminders (like album release notes) are left out since they're not actual timed meetings. Events sourced from Central show a small LC badge. Week A/Week B and pre/post-Switch Wednesday are figured out automatically from the date. A running timer survives an accidental refresh. Keep this tab open, unlocked, and in the foreground for auto-start and alerts to fire.
+    <b>Note:</b> Every block in your real week is here \u2014 services, rehearsals, campus recurring meetings, and confirmed one-off meetings, all auto-startable. Known Doc Update, Call Times, and pure FYI reminders are left out. Events sourced from Central show a small LC badge. Alerts: single beep+vibrate at 15 min left, triple beep+vibrate at 5 min left, then a beep+vibrate every 5 seconds through the final minute, plus a beep+vibrate every minute once overtime starts. Week A/Week B and pre/post-Switch Wednesday are figured out automatically from the date. A running timer survives an accidental refresh. Keep this tab open, unlocked, and in the foreground for alerts to fire.
   </div>
 </div>
 
@@ -389,6 +389,7 @@ let remainingSec = 0;
 let totalSec = 0;
 let running = false;
 let warned5 = false;
+let warned15 = false;
 let audioCtx = null;
 let wakeLock = null;
 let autoStartEnabled = false;
@@ -425,7 +426,7 @@ function saveState(){
   try{
     localStorage.setItem(STORAGE_KEY, JSON.stringify({
       weekOffset, currentDayIdx, selectedIdx, remainingSec, totalSec,
-      running, warned5, endPrompted, autoStartEnabled, savedAt: Date.now()
+      running, warned5, warned15, endPrompted, autoStartEnabled, savedAt: Date.now()
     }));
   }catch(e){}
 }
@@ -534,6 +535,7 @@ function selectBlock(i, keepState){
     totalSec = b.dur*60;
     remainingSec = totalSec;
     warned5 = false;
+    warned15 = false;
   }
   endPrompted = false;
   hideNextPrompt();
@@ -610,10 +612,19 @@ function updateFillBar(){
 
 function tick(){
   remainingSec -= 1;
+  if(remainingSec === 900 && !warned15){
+    warned15 = true;
+    beep(700,180,0.28);
+    vibrate([150]);
+  }
   if(remainingSec === 300 && !warned5){
     warned5 = true;
     tripleBeep();
     vibrate([200,100,200,100,200]);
+  }
+  if(remainingSec > 0 && remainingSec <= 60 && remainingSec % 5 === 0){
+    beep(1046,140,0.32);
+    vibrate([120]);
   }
   if(remainingSec === 0 && !endPrompted){
     endPrompted = true;
@@ -737,6 +748,7 @@ function restoreState(saved){
   totalSec = saved.totalSec;
   remainingSec = saved.remainingSec;
   warned5 = !!saved.warned5;
+  warned15 = !!saved.warned15;
   endPrompted = !!saved.endPrompted;
 
   if(saved.running){
