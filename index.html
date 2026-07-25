@@ -764,7 +764,7 @@ function syncAutoToggleUI(){
   if(!autoStartEnabled){ status.textContent = ''; return; }
   const today = dayNameFromDate(new Date());
   if(!today){ status.textContent = 'No blocks scheduled today \u2014 nothing to auto-start.'; return; }
-  status.textContent = `Watching ${today} \u2014 will jump in when a block starts.`;
+  status.textContent = `Watching ${today} \u2014 auto-starts on time, or catches up if already underway.`;
 }
 
 function jumpToToday(){
@@ -778,6 +778,23 @@ function jumpToToday(){
   renderBlockList();
 }
 
+function toSecondsOfDay(date){
+  return date.getHours()*3600 + date.getMinutes()*60 + date.getSeconds();
+}
+function blockStartSeconds(b){
+  const [h,m] = b.s.split(':').map(Number);
+  return h*3600 + m*60;
+}
+function findOngoingBlockIndex(blocks, nowDate){
+  const nowSec = toSecondsOfDay(nowDate);
+  for(let i=0;i<blocks.length;i++){
+    const startSec = blockStartSeconds(blocks[i]);
+    const endSec = startSec + blocks[i].dur*60;
+    if(nowSec >= startSec && nowSec < endSec) return i;
+  }
+  return -1;
+}
+
 function autoWatchTick(){
   if(!autoStartEnabled) return;
   const now = new Date();
@@ -789,13 +806,38 @@ function autoWatchTick(){
   }
   const hhmm = nowHHMM(now);
   const blocks = getCurrentBlocks();
-  const idx = blocks.findIndex(b => b.s === hhmm);
-  if(idx === -1) return;
-  const key = hhmm + '-' + idx;
-  if(key === lastAutoKey) return;
-  lastAutoKey = key;
-  selectBlock(idx);
-  startTimer(false);
+
+  const exactIdx = blocks.findIndex(b => b.s === hhmm);
+  if(exactIdx !== -1){
+    const key = hhmm + '-' + exactIdx;
+    if(key !== lastAutoKey){
+      lastAutoKey = key;
+      selectBlock(exactIdx);
+      startTimer(false);
+    }
+    return;
+  }
+
+  // Nothing currently active? Check if "now" falls inside a block already underway
+  // (e.g. the page was just opened, or auto-start was just turned on, mid-meeting).
+  if(selectedIdx === null && quickTimerMinutes === null){
+    const ongoingIdx = findOngoingBlockIndex(blocks, now);
+    if(ongoingIdx !== -1){
+      const catchUpKey = 'ongoing-' + dateKey(now) + '-' + ongoingIdx;
+      if(catchUpKey !== lastAutoKey){
+        lastAutoKey = catchUpKey;
+        const b = blocks[ongoingIdx];
+        const elapsedSec = toSecondsOfDay(now) - blockStartSeconds(b);
+        selectBlock(ongoingIdx);
+        remainingSec = Math.max(0, totalSec - elapsedSec);
+        warned15 = remainingSec <= 900;
+        warned5 = remainingSec <= 300;
+        updateDisplay();
+        updateFillBar();
+        startTimer(false);
+      }
+    }
+  }
 }
 
 document.getElementById('autoToggle').onchange = (e)=>{
@@ -910,8 +952,11 @@ const savedOnLoad = loadState();
 renderAll();
 renderQuickTimerButtons();
 restoreState(savedOnLoad);
+autoStartEnabled = true;
+syncAutoToggleUI();
 renderClock();
 setInterval(renderClock, 1000);
+autoWatchTick();
 autoWatchInterval = setInterval(autoWatchTick, 5000);
 </script>
 </body>
