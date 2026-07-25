@@ -141,6 +141,22 @@
     font-family:'IBM Plex Mono',monospace; font-size:10.5px; color:var(--ink-faint);
     border-top:1px solid var(--hairline); padding-top:14px; margin-top:8px; line-height:1.6;
   }
+
+  .quick-timer-section{ margin-top:4px; }
+  .quick-timer-label{
+    font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--ink-faint);
+    text-transform:uppercase; letter-spacing:0.08em; margin-bottom:8px; text-align:center;
+  }
+  .quick-timer-grid{
+    display:grid; grid-template-columns:repeat(3, 1fr); gap:8px;
+  }
+  .qt-btn{
+    padding:14px 6px; border-radius:9px; border:1px solid var(--hairline);
+    background:var(--bg-raised); color:var(--ink); cursor:pointer;
+    font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:16px;
+    letter-spacing:0.02em; text-align:center;
+  }
+  .qt-btn:active{ background:var(--slate); color:var(--bg); }
 </style>
 </head>
 <body>
@@ -186,8 +202,9 @@
     <div class="next-prompt" id="nextPrompt" style="display:none;"></div>
   </div>
 
-  <div class="footnote">
-    <b>Note:</b> Every block in your real week is here \u2014 services, rehearsals, campus recurring meetings, and confirmed one-off meetings, all auto-startable. Known Doc Update, Call Times, and pure FYI reminders are left out. Events sourced from Central show a small LC badge. Alerts: single beep+vibrate at 15 min left, triple beep+vibrate at 5 min left, then a beep+vibrate every 5 seconds through the final minute, plus a beep+vibrate every minute once overtime starts. Week A/Week B and pre/post-Switch Wednesday are figured out automatically from the date. A running timer survives an accidental refresh. Keep this tab open, unlocked, and in the foreground for alerts to fire.
+  <div class="quick-timer-section">
+    <div class="quick-timer-label">Quick Timer</div>
+    <div class="quick-timer-grid" id="quickTimerGrid"></div>
   </div>
 </div>
 
@@ -396,6 +413,7 @@ let autoStartEnabled = false;
 let autoWatchInterval = null;
 let lastAutoKey = null;
 let endPrompted = false;
+let quickTimerMinutes = null;
 const STORAGE_KEY = 'blockTimerState_v2';
 
 function beep(freq=880, dur=180, vol=0.3){
@@ -425,7 +443,7 @@ async function requestWakeLock(){
 function saveState(){
   try{
     localStorage.setItem(STORAGE_KEY, JSON.stringify({
-      weekOffset, currentDayIdx, selectedIdx, remainingSec, totalSec,
+      weekOffset, currentDayIdx, selectedIdx, quickTimerMinutes, remainingSec, totalSec,
       running, warned5, warned15, endPrompted, autoStartEnabled, savedAt: Date.now()
     }));
   }catch(e){}
@@ -528,6 +546,7 @@ function renderBlockList(){
 }
 
 function selectBlock(i, keepState){
+  quickTimerMinutes = null;
   selectedIdx = i;
   const blocks = getCurrentBlocks();
   const b = blocks[i];
@@ -556,6 +575,7 @@ function selectBlock(i, keepState){
 
 function resetTimerState(){
   selectedIdx = null;
+  quickTimerMinutes = null;
   running = false;
   endPrompted = false;
   clearInterval(timerInterval);
@@ -658,6 +678,7 @@ document.getElementById('btnPause').onclick = ()=>{
   saveState();
 };
 document.getElementById('btnReset').onclick = ()=>{
+  if(quickTimerMinutes !== null){ startQuickTimer(quickTimerMinutes); return; }
   if(selectedIdx===null) return;
   selectBlock(selectedIdx);
 };
@@ -726,6 +747,52 @@ document.getElementById('autoToggle').onchange = (e)=>{
   saveState();
 };
 
+function startQuickTimer(minutes){
+  autoStartEnabled = false;
+  syncAutoToggleUI();
+  selectedIdx = null;
+  quickTimerMinutes = minutes;
+  totalSec = minutes*60;
+  remainingSec = totalSec;
+  warned5 = false;
+  warned15 = false;
+  endPrompted = false;
+  hideNextPrompt();
+  running = false;
+  clearInterval(timerInterval);
+  const label = minutes >= 60 ? `Quick Timer \u2014 ${minutes/60}hr` : `Quick Timer \u2014 ${minutes} min`;
+  document.getElementById('timerLabel').textContent = label;
+  updateDisplay();
+  document.getElementById('btnStart').disabled = false;
+  document.getElementById('btnPause').disabled = true;
+  document.getElementById('btnReset').disabled = false;
+  document.getElementById('timerPanel').className = 'timer-panel';
+  document.getElementById('timerDisplay').className = 'timer-display';
+  document.getElementById('upNext').textContent = '';
+  renderBlockList();
+  saveState();
+}
+
+function renderQuickTimerButtons(){
+  const grid = document.getElementById('quickTimerGrid');
+  const options = [
+    {label:'1 hr', minutes:60},
+    {label:'45 min', minutes:45},
+    {label:'30 min', minutes:30},
+    {label:'15 min', minutes:15},
+    {label:'5 min', minutes:5},
+    {label:'1 min', minutes:1},
+  ];
+  grid.innerHTML = '';
+  options.forEach(opt=>{
+    const btn = document.createElement('div');
+    btn.className = 'qt-btn';
+    btn.textContent = opt.label;
+    btn.onclick = ()=> startQuickTimer(opt.minutes);
+    grid.appendChild(btn);
+  });
+}
+
 function renderAll(){
   renderWeekNav();
   renderTabs();
@@ -736,7 +803,11 @@ function renderAll(){
 }
 
 function restoreState(saved){
-  if(!saved || saved.selectedIdx === null || saved.selectedIdx === undefined) return;
+  if(!saved) return;
+  const hasRealBlock = saved.selectedIdx !== null && saved.selectedIdx !== undefined;
+  const hasQuickTimer = saved.quickTimerMinutes !== null && saved.quickTimerMinutes !== undefined;
+  if(!hasRealBlock && !hasQuickTimer) return;
+
   weekOffset = saved.weekOffset;
   currentDayIdx = saved.currentDayIdx;
   autoStartEnabled = !!saved.autoStartEnabled;
@@ -756,7 +827,18 @@ function restoreState(saved){
     remainingSec -= Math.max(0, elapsed);
   }
 
-  selectBlock(saved.selectedIdx, true);
+  if(hasQuickTimer){
+    quickTimerMinutes = saved.quickTimerMinutes;
+    selectedIdx = null;
+    const label = quickTimerMinutes >= 60 ? `Quick Timer \u2014 ${quickTimerMinutes/60}hr` : `Quick Timer \u2014 ${quickTimerMinutes} min`;
+    document.getElementById('timerLabel').textContent = label;
+    updateDisplay();
+    document.getElementById('btnStart').disabled = false;
+    document.getElementById('btnPause').disabled = true;
+    document.getElementById('btnReset').disabled = false;
+  } else {
+    selectBlock(saved.selectedIdx, true);
+  }
 
   if(saved.running){
     document.getElementById('btnStart').click();
@@ -766,6 +848,7 @@ function restoreState(saved){
 
 const savedOnLoad = loadState();
 renderAll();
+renderQuickTimerButtons();
 restoreState(savedOnLoad);
 renderClock();
 setInterval(renderClock, 1000);
