@@ -431,6 +431,11 @@ function beep(freq=880, dur=180, vol=0.3){
 }
 function tripleBeep(){ beep(880,150); setTimeout(()=>beep(880,150),250); setTimeout(()=>beep(880,150),500); }
 function overtimeBeep(){ beep(660,300,0.35); }
+function startChime(){
+  beep(600,110,0.3);
+  setTimeout(()=>beep(760,110,0.3),130);
+  setTimeout(()=>beep(920,130,0.3),260);
+}
 
 function vibrate(pattern){
   try{ if(navigator.vibrate) navigator.vibrate(pattern); }catch(e){}
@@ -485,7 +490,7 @@ function showNextPrompt(){
   document.getElementById('startNextBtn').onclick = ()=>{
     hideNextPrompt();
     selectBlock(next.idx);
-    document.getElementById('btnStart').click();
+    startTimer(false);
   };
 }
 function hideNextPrompt(){ document.getElementById('nextPrompt').style.display = 'none'; }
@@ -660,16 +665,22 @@ function tick(){
   saveState();
 }
 
-document.getElementById('btnStart').onclick = ()=>{
-  if(selectedIdx===null) return;
+function startTimer(silent){
+  if(selectedIdx===null && quickTimerMinutes===null) return;
   running = true;
+  if(!silent){
+    startChime();
+    vibrate([100,80,100,80,120]);
+  }
   requestWakeLock();
   clearInterval(timerInterval);
   timerInterval = setInterval(tick, 1000);
   document.getElementById('btnStart').disabled = true;
   document.getElementById('btnPause').disabled = false;
   saveState();
-};
+}
+
+document.getElementById('btnStart').onclick = ()=> startTimer(false);
 document.getElementById('btnPause').onclick = ()=>{
   running = false;
   clearInterval(timerInterval);
@@ -737,7 +748,7 @@ function autoWatchTick(){
   if(key === lastAutoKey) return;
   lastAutoKey = key;
   selectBlock(idx);
-  document.getElementById('btnStart').click();
+  startTimer(false);
 }
 
 document.getElementById('autoToggle').onchange = (e)=>{
@@ -841,7 +852,7 @@ function restoreState(saved){
   }
 
   if(saved.running){
-    document.getElementById('btnStart').click();
+    startTimer(true);
   }
   syncAutoToggleUI();
 }
