@@ -187,7 +187,7 @@
   </div>
 
   <div class="footnote">
-    <b>Note:</b> Every block in your real week is here \u2014 services, rehearsals, and your campus's recurring meetings, all auto-startable. Known Doc Update and Call Times are left out. Events sourced from Central (currently just 15Five due) show a small "LC" badge \u2014 swap in your real logo any time by sending it over. Week A/Week B and pre/post-Switch Wednesday are figured out automatically from the date. A running timer survives an accidental refresh. Keep this tab open, unlocked, and in the foreground for auto-start and alerts to fire.
+    <b>Note:</b> Every block in your real week is here \u2014 services, rehearsals, campus recurring meetings, and confirmed one-off meetings, all auto-startable. Known Doc Update, Call Times, and pure FYI reminders (like album release notes) are left out since they're not actual timed meetings. Events sourced from Central show a small LC badge. Week A/Week B and pre/post-Switch Wednesday are figured out automatically from the date. A running timer survives an accidental refresh. Keep this tab open, unlocked, and in the foreground for auto-start and alerts to fire.
   </div>
 </div>
 
@@ -266,6 +266,33 @@ const SUNDAY_BLOCKS = [
   {t:'15Five due WP/AWP', s:'14:00', dur:30, cat:'org', central:true},
 ];
 
+// One-off, non-recurring confirmed meetings, keyed by date "YYYY-MM-DD".
+// These get merged into that specific day's block list, sorted by start time.
+const ONEOFF_BLOCKS = {
+  '2026-07-27': [
+    {t:'ATM Catoosa Pickup & Lunch In', s:'12:00', dur:120, cat:'org'},
+  ],
+  '2026-07-28': [
+    {t:'Misters for Sisters Recruiting Convo', s:'10:30', dur:30, cat:'org'},
+    {t:'Starting Selection Process Training', s:'11:45', dur:15, cat:'org', central:true},
+  ],
+  '2026-07-29': [
+    {t:'Community and Switch Social Recording', s:'12:00', dur:60, cat:'org'},
+  ],
+  '2026-08-03': [
+    {t:'Team Lunch IN', s:'11:30', dur:30, cat:'org'},
+    {t:'Jake & Krysten Live Speak Run Through', s:'11:45', dur:45, cat:'org'},
+    {t:'Q4 Planning Strategy Session', s:'13:30', dur:60, cat:'org'},
+  ],
+};
+
+function dateKey(date){
+  const y = date.getFullYear();
+  const m = String(date.getMonth()+1).padStart(2,'0');
+  const d = String(date.getDate()).padStart(2,'0');
+  return `${y}-${m}-${d}`;
+}
+
 const WEEK_A_ANCHOR = new Date(2026, 6, 27); // Jul 27, 2026 = a Week A Monday
 const SWITCH_RESTART = new Date(2026, 7, 5); // Aug 5, 2026
 
@@ -311,19 +338,27 @@ function getDateForDay(weekOffset, dayIdx){
   return d;
 }
 
+function mergeOneOffs(templateBlocks, date){
+  const oneOffs = ONEOFF_BLOCKS[dateKey(date)] || [];
+  if(oneOffs.length === 0) return templateBlocks;
+  const combined = [...templateBlocks, ...oneOffs];
+  combined.sort((a,b) => a.s.localeCompare(b.s));
+  return combined;
+}
+
 function getBlocksAndNote(dayIdx, date){
   if(dayIdx === 0){
     const w = computeWeekLetter(date);
-    return { blocks: w==='A' ? MONDAY_A : MONDAY_B, note: `Week ${w}` };
+    return { blocks: mergeOneOffs(w==='A' ? MONDAY_A : MONDAY_B, date), note: `Week ${w}` };
   }
-  if(dayIdx === 1){ return { blocks: TUESDAY_BLOCKS, note: '' }; }
+  if(dayIdx === 1){ return { blocks: mergeOneOffs(TUESDAY_BLOCKS, date), note: '' }; }
   if(dayIdx === 2){
     const isNew = stripTime(date) >= stripTime(SWITCH_RESTART);
-    return { blocks: isNew ? WED_NEW : WED_OLD, note: isNew ? 'Switch is back \u2014 noon start' : 'pre-Switch schedule' };
+    return { blocks: mergeOneOffs(isNew ? WED_NEW : WED_OLD, date), note: isNew ? 'Switch is back \u2014 noon start' : 'pre-Switch schedule' };
   }
-  if(dayIdx === 3){ return { blocks: THURSDAY_BLOCKS, note: '' }; }
-  if(dayIdx === 4){ return { blocks: SATURDAY_BLOCKS, note: '' }; }
-  return { blocks: SUNDAY_BLOCKS, note: '' };
+  if(dayIdx === 3){ return { blocks: mergeOneOffs(THURSDAY_BLOCKS, date), note: '' }; }
+  if(dayIdx === 4){ return { blocks: mergeOneOffs(SATURDAY_BLOCKS, date), note: '' }; }
+  return { blocks: mergeOneOffs(SUNDAY_BLOCKS, date), note: '' };
 }
 
 function fmtDate(date){
