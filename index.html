@@ -47,15 +47,15 @@
     font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--ink-dim); text-align:center; flex:1;
   }
 
-  .tabs{ display:flex; gap:6px; margin-bottom:16px; }
+  .tabs{ display:flex; gap:5px; margin-bottom:16px; flex-wrap:wrap; }
   .tab{
-    flex:1; text-align:center; padding:9px 4px; border-radius:8px;
-    font-family:'Barlow Condensed',sans-serif; font-weight:600; font-size:14px;
+    flex:1; min-width:14%; text-align:center; padding:8px 3px; border-radius:8px;
+    font-family:'Barlow Condensed',sans-serif; font-weight:600; font-size:13px;
     letter-spacing:0.02em; text-transform:uppercase; cursor:pointer;
     background:var(--bg-raised); color:var(--ink-dim); border:1px solid var(--hairline);
     display:flex; flex-direction:column; align-items:center; line-height:1.15;
   }
-  .tab .tab-date{ font-family:'IBM Plex Mono',monospace; font-size:9.5px; font-weight:400; text-transform:none; margin-top:1px; opacity:0.75; }
+  .tab .tab-date{ font-family:'IBM Plex Mono',monospace; font-size:9px; font-weight:400; text-transform:none; margin-top:1px; opacity:0.75; }
   .tab.active{ background:var(--amber); color:#fff; border-color:var(--amber); }
 
   .day-note{ font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--ink-faint); margin-bottom:12px; }
@@ -181,7 +181,7 @@
   </div>
 
   <div class="footnote">
-    <b>Note:</b> Services and rehearsals are intentionally left out. Beeps + vibrates 3x at 5 min remaining, then beeps/vibrates every minute once overtime starts, and prompts you to start the next block the moment one ends. Week A/Week B and pre/post-Switch Wednesday are figured out automatically from the actual date. A running timer survives an accidental refresh or app close &mdash; it catches up using the real elapsed time when you reopen it. Keep this tab open, unlocked, and in the foreground for auto-start and alerts to actually fire.
+    <b>Note:</b> Every block in your real week is here now &mdash; services, rehearsals, and Megan's recurring meetings, all auto-startable. Known Doc Update is left out since it's a personal reminder, not a meeting. Week A/Week B and pre/post-Switch Wednesday are figured out automatically from the date. A running timer survives an accidental refresh. Keep this tab open, unlocked, and in the foreground for auto-start and alerts to fire.
   </div>
 </div>
 
@@ -192,16 +192,20 @@ const catColor = {
   org:'var(--org)', family:'var(--pink)', dream:'var(--dream)'
 };
 
-// All durations in minutes. Times are 24-hour "HH:MM". Services & rehearsals intentionally excluded.
+// All durations in minutes. Times are 24-hour "HH:MM".
 const MONDAY_A = [
   {t:'PLAN | Day', s:'09:00', dur:15, cat:'plan'},
   {t:'MEET | PREP', s:'09:15', dur:30, cat:'team'},
+  {t:'Team Meeting Locked In', s:'10:00', dur:60, cat:'org'},
   {t:'TEAM | Development', s:'11:15', dur:60, cat:'team'},
   {t:'ADMIN | Schedule', s:'13:00', dur:60, cat:'admin'},
+  {t:'Associate Development Time', s:'14:30', dur:60, cat:'org'},
   {t:'🟢 OPEN | Flex', s:'15:30', dur:60, cat:'open'},
 ];
 const MONDAY_B = [
   {t:'PLAN | Day', s:'09:00', dur:15, cat:'plan'},
+  {t:'Team Lead', s:'09:30', dur:30, cat:'org'},
+  {t:'Team Meeting Extended', s:'10:00', dur:90, cat:'org'},
   {t:'ADMIN | Schedule', s:'13:00', dur:60, cat:'admin'},
   {t:'TEAM | Development', s:'14:30', dur:60, cat:'team'},
   {t:'🟢 OPEN | Flex', s:'15:30', dur:60, cat:'open'},
@@ -229,6 +233,8 @@ const WED_NEW = [
   {t:'🟢 OPEN | Flex', s:'13:15', dur:135, cat:'open'},
   {t:'ADMIN | Catch Up', s:'15:30', dur:60, cat:'admin'},
   {t:'PREP | SWITCH', s:'16:30', dur:60, cat:'build'},
+  {t:'REHEARSE | SWITCH', s:'17:30', dur:75, cat:'build'},
+  {t:'SERVICE | SWITCH', s:'19:00', dur:90, cat:'build'},
 ];
 const THURSDAY_BLOCKS = [
   {t:'PLAN | Day', s:'09:00', dur:15, cat:'plan'},
@@ -239,6 +245,21 @@ const THURSDAY_BLOCKS = [
   {t:'Team Time', s:'13:15', dur:60, cat:'org'},
   {t:'Walk Through', s:'14:15', dur:60, cat:'org'},
   {t:'BW/MA 1:1', s:'15:15', dur:45, cat:'org'},
+];
+const SATURDAY_BLOCKS = [
+  {t:'Saturday Call Time / Huddle', s:'15:30', dur:15, cat:'org'},
+  {t:'REHEARSE | SAT', s:'15:30', dur:75, cat:'build'},
+  {t:'SERVICE | SAT', s:'17:00', dur:75, cat:'build'},
+];
+const SUNDAY_BLOCKS = [
+  {t:'REHEARSE | SUN', s:'06:45', dur:75, cat:'build'},
+  {t:'Sunday Call Time', s:'07:15', dur:15, cat:'org'},
+  {t:'SERVICE | SUN 8:30', s:'08:30', dur:75, cat:'build'},
+  {t:'SERVICE | SUN 10:00', s:'10:00', dur:75, cat:'build'},
+  {t:'Message Feedback Texted', s:'10:30', dur:30, cat:'org'},
+  {t:'SERVICE | SUN 11:30', s:'11:30', dur:75, cat:'build'},
+  {t:'SERVICE | SUN 1:00', s:'13:00', dur:75, cat:'build'},
+  {t:'15Five due WP/AWP', s:'14:00', dur:30, cat:'org'},
 ];
 
 const WEEK_A_ANCHOR = new Date(2026, 6, 27); // Jul 27, 2026 = a Week A Monday
@@ -254,16 +275,12 @@ function computeWeekLetter(date){
   return (((diffWeeks % 2) + 2) % 2 === 0) ? 'A' : 'B';
 }
 
+// Base Monday = the Monday of the calendar week containing "today", for ALL weekdays (Mon-Sun alike).
 function getBaseMonday(){
   const now = stripTime(new Date());
   const dow = now.getDay(); // 0=Sun..6=Sat
-  let monday;
-  if(dow>=1 && dow<=4){
-    monday = new Date(now); monday.setDate(now.getDate() - (dow-1));
-  } else {
-    const daysUntilMonday = dow===0 ? 1 : (8-dow);
-    monday = new Date(now); monday.setDate(now.getDate() + daysUntilMonday);
-  }
+  const daysSinceMonday = (dow + 6) % 7; // Mon=0,Tue=1,...Sun=6
+  const monday = new Date(now); monday.setDate(now.getDate() - daysSinceMonday);
   return monday;
 }
 
@@ -273,11 +290,20 @@ function getWeekMonday(offset){
   return m;
 }
 
-const DAY_LABELS = ['Mon','Tue','Wed','Thu'];
+// dayIdx -> {label, offsetFromMonday}
+const DAY_CONFIG = [
+  {label:'Mon', offset:0},
+  {label:'Tue', offset:1},
+  {label:'Wed', offset:2},
+  {label:'Thu', offset:3},
+  {label:'Sat', offset:5},
+  {label:'Sun', offset:6},
+];
+const DAY_LABELS = DAY_CONFIG.map(d=>d.label);
 
 function getDateForDay(weekOffset, dayIdx){
   const monday = getWeekMonday(weekOffset);
-  const d = new Date(monday); d.setDate(monday.getDate() + dayIdx);
+  const d = new Date(monday); d.setDate(monday.getDate() + DAY_CONFIG[dayIdx].offset);
   return d;
 }
 
@@ -291,7 +317,9 @@ function getBlocksAndNote(dayIdx, date){
     const isNew = stripTime(date) >= stripTime(SWITCH_RESTART);
     return { blocks: isNew ? WED_NEW : WED_OLD, note: isNew ? 'Switch is back \u2014 noon start' : 'pre-Switch schedule' };
   }
-  return { blocks: THURSDAY_BLOCKS, note: '' };
+  if(dayIdx === 3){ return { blocks: THURSDAY_BLOCKS, note: '' }; }
+  if(dayIdx === 4){ return { blocks: SATURDAY_BLOCKS, note: '' }; }
+  return { blocks: SUNDAY_BLOCKS, note: '' };
 }
 
 function fmtDate(date){
@@ -299,8 +327,8 @@ function fmtDate(date){
 }
 
 function dayNameFromDate(date){
-  const map = {1:'Mon', 2:'Tue', 3:'Wed', 4:'Thu'};
-  return map[date.getDay()] || null;
+  const map = {1:'Mon', 2:'Tue', 3:'Wed', 4:'Thu', 6:'Sat', 0:'Sun'};
+  return map[date.getDay()] !== undefined ? map[date.getDay()] : null;
 }
 
 function nowHHMM(date){
@@ -328,7 +356,7 @@ let autoStartEnabled = false;
 let autoWatchInterval = null;
 let lastAutoKey = null;
 let endPrompted = false;
-const STORAGE_KEY = 'blockTimerState_v1';
+const STORAGE_KEY = 'blockTimerState_v2';
 
 function beep(freq=880, dur=180, vol=0.3){
   try{
@@ -346,12 +374,12 @@ function beep(freq=880, dur=180, vol=0.3){
 function tripleBeep(){ beep(880,150); setTimeout(()=>beep(880,150),250); setTimeout(()=>beep(880,150),500); }
 function overtimeBeep(){ beep(660,300,0.35); }
 
-async function requestWakeLock(){
-  try{ if('wakeLock' in navigator){ wakeLock = await navigator.wakeLock.request('screen'); } }catch(e){}
-}
-
 function vibrate(pattern){
   try{ if(navigator.vibrate) navigator.vibrate(pattern); }catch(e){}
+}
+
+async function requestWakeLock(){
+  try{ if('wakeLock' in navigator){ wakeLock = await navigator.wakeLock.request('screen'); } }catch(e){}
 }
 
 function saveState(){
@@ -362,16 +390,14 @@ function saveState(){
     }));
   }catch(e){}
 }
-
 function loadState(){
-  try{
-    const raw = localStorage.getItem(STORAGE_KEY);
-    return raw ? JSON.parse(raw) : null;
-  }catch(e){ return null; }
+  try{ const raw = localStorage.getItem(STORAGE_KEY); return raw ? JSON.parse(raw) : null; }catch(e){ return null; }
 }
+function clearState(){ try{ localStorage.removeItem(STORAGE_KEY); }catch(e){} }
 
-function clearState(){
-  try{ localStorage.removeItem(STORAGE_KEY); }catch(e){}
+function getCurrentBlocks(){
+  const date = getDateForDay(weekOffset, currentDayIdx);
+  return getBlocksAndNote(currentDayIdx, date).blocks;
 }
 
 function getNextBlock(){
@@ -404,15 +430,7 @@ function showNextPrompt(){
     document.getElementById('btnStart').click();
   };
 }
-
-function hideNextPrompt(){
-  document.getElementById('nextPrompt').style.display = 'none';
-}
-
-function getCurrentBlocks(){
-  const date = getDateForDay(weekOffset, currentDayIdx);
-  return getBlocksAndNote(currentDayIdx, date).blocks;
-}
+function hideNextPrompt(){ document.getElementById('nextPrompt').style.display = 'none'; }
 
 function renderClock(){
   const now = new Date();
@@ -425,18 +443,18 @@ function renderClock(){
 
 function renderWeekNav(){
   const monday = getWeekMonday(weekOffset);
-  const thursday = new Date(monday); thursday.setDate(monday.getDate()+3);
-  document.getElementById('weekRange').textContent = `${fmtDate(monday)} \u2013 ${fmtDate(thursday)}` + (weekOffset===0 ? ' (this week)' : '');
+  const sunday = new Date(monday); sunday.setDate(monday.getDate()+6);
+  document.getElementById('weekRange').textContent = `${fmtDate(monday)} \u2013 ${fmtDate(sunday)}` + (weekOffset===0 ? ' (this week)' : '');
 }
 
 function renderTabs(){
   const tabsEl = document.getElementById('dayTabs');
   tabsEl.innerHTML = '';
-  DAY_LABELS.forEach((day,i)=>{
+  DAY_CONFIG.forEach((day,i)=>{
     const date = getDateForDay(weekOffset, i);
     const el = document.createElement('div');
     el.className = 'tab' + (i===currentDayIdx ? ' active' : '');
-    el.innerHTML = `${day}<span class="tab-date">${fmtDate(date)}</span>`;
+    el.innerHTML = `${day.label}<span class="tab-date">${fmtDate(date)}</span>`;
     el.onclick = ()=>{ autoStartEnabled = false; currentDayIdx = i; selectedIdx = null; resetTimerState(); renderAll(); };
     tabsEl.appendChild(el);
   });
