@@ -237,7 +237,7 @@
 </div>
 
 <script>
-const APP_VERSION = '20260725T173840Z';
+const APP_VERSION = '20260725T174408Z';
 const catColor = {
   plan:'var(--violet)', build:'var(--amber)', team:'var(--teal)',
   content:'var(--coral)', admin:'var(--slate)', open:'var(--green)',
@@ -496,10 +496,16 @@ async function requestWakeLock(){
   try{ if('wakeLock' in navigator){ wakeLock = await navigator.wakeLock.request('screen'); } }catch(e){}
 }
 
+function blockSignature(b){
+  return b ? (b.t + '@' + b.s) : null;
+}
+
 function saveState(){
   try{
+    const blocks = getCurrentBlocks();
+    const sig = selectedIdx !== null ? blockSignature(blocks[selectedIdx]) : null;
     localStorage.setItem(STORAGE_KEY, JSON.stringify({
-      weekOffset, currentDayIdx, selectedIdx, quickTimerMinutes, remainingSec, totalSec,
+      weekOffset, currentDayIdx, selectedIdx, blockSig: sig, quickTimerMinutes, remainingSec, totalSec,
       running, warned5, warned15, endPrompted, autoStartEnabled, lastAutoKey, savedAt: Date.now()
     }));
   }catch(e){}
@@ -610,8 +616,8 @@ function selectBlock(i, keepState){
   if(!keepState){
     totalSec = b.dur*60;
     remainingSec = totalSec;
-    warned5 = false;
-    warned15 = false;
+    warned5 = totalSec <= 300;
+    warned15 = totalSec <= 900;
   }
   endPrompted = false;
   hideNextPrompt();
@@ -922,8 +928,8 @@ function startQuickTimer(minutes){
   resetQuickTimerFills();
   totalSec = minutes*60;
   remainingSec = totalSec;
-  warned5 = false;
-  warned15 = false;
+  warned5 = totalSec <= 300;
+  warned15 = totalSec <= 900;
   endPrompted = false;
   hideNextPrompt();
   running = false;
@@ -985,6 +991,21 @@ function restoreState(saved){
   renderDayNote();
   renderBlockList();
 
+  let resolvedIdx = saved.selectedIdx;
+  if(hasRealBlock){
+    const blocks = getCurrentBlocks();
+    // Don't trust the stored position blindly -- the schedule data may have
+    // shifted (edits, test blocks added/removed, etc). Re-find the exact same
+    // block by its signature; if it's genuinely gone, abandon the restore
+    // rather than showing a countdown for the wrong thing.
+    const freshIdx = blocks.findIndex(b => blockSignature(b) === saved.blockSig);
+    if(freshIdx === -1){
+      resetTimerState();
+      return;
+    }
+    resolvedIdx = freshIdx;
+  }
+
   totalSec = saved.totalSec;
   remainingSec = saved.remainingSec;
   warned5 = !!saved.warned5;
@@ -1006,7 +1027,7 @@ function restoreState(saved){
     document.getElementById('btnPause').disabled = true;
     document.getElementById('btnReset').disabled = false;
   } else {
-    selectBlock(saved.selectedIdx, true);
+    selectBlock(resolvedIdx, true);
   }
 
   if(saved.running){
