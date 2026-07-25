@@ -317,6 +317,16 @@ const ONEOFF_BLOCKS = {
   ],
 };
 
+// Full one-time day-pattern overrides, keyed by date "YYYY-MM-DD". Used when an entire
+// day's shape (not just an extra meeting) is different from the usual template for one occurrence.
+const DAY_OVERRIDES = {
+  '2026-07-25': [
+    {t:'REHEARSAL | SAT', s:'14:30', dur:75, cat:'build'},
+    {t:'SERVICE | SAT 4:00', s:'16:00', dur:75, cat:'build'},
+    {t:'SERVICE | SAT 5:30', s:'17:30', dur:75, cat:'build'},
+  ],
+};
+
 function dateKey(date){
   const y = date.getFullYear();
   const m = String(date.getMonth()+1).padStart(2,'0');
@@ -378,6 +388,10 @@ function mergeOneOffs(templateBlocks, date){
 }
 
 function getBlocksAndNote(dayIdx, date){
+  const override = DAY_OVERRIDES[dateKey(date)];
+  if(override){
+    return { blocks: mergeOneOffs(override, date), note: 'one-time schedule for today' };
+  }
   if(dayIdx === 0){
     const w = computeWeekLetter(date);
     return { blocks: mergeOneOffs(w==='A' ? MONDAY_A : MONDAY_B, date), note: `Week ${w}` };
