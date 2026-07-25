@@ -35,6 +35,8 @@
     margin-top:2px;
   }
   .sync-btn:active{ background:var(--slate); color:var(--bg); transform:rotate(45deg); }
+  @keyframes spin-sync{ from{ transform:rotate(0deg); } to{ transform:rotate(360deg); } }
+  .sync-btn.spinning{ animation: spin-sync 0.6s linear infinite; }
 
   .clock-panel{
     background:var(--bg-raised); border:1px solid var(--hairline); border-radius:12px;
@@ -237,7 +239,7 @@
 </div>
 
 <script>
-const APP_VERSION = '20260725T180121Z';
+const APP_VERSION = '20260725T180656Z';
 const catColor = {
   plan:'var(--violet)', build:'var(--amber)', team:'var(--teal)',
   content:'var(--coral)', admin:'var(--slate)', open:'var(--green)',
@@ -846,6 +848,8 @@ function checkForUpdate(){
         // still mismatches, it cannot immediately reload again.
         sessionStorage.setItem('updateCooldownUntil', String(Date.now() + 20000));
         const bust = (location.href.includes('?') ? '&' : '?') + '_r=' + Date.now();
+        const syncBtnEl = document.getElementById('syncBtn');
+        if(syncBtnEl) syncBtnEl.classList.add('spinning');
         location.href = location.pathname + bust;
       }
     })
@@ -859,7 +863,10 @@ window.addEventListener('focus', ()=>{ checkForUpdate(); autoWatchTick(); });
 window.addEventListener('pageshow', ()=>{ checkForUpdate(); autoWatchTick(); });
 setInterval(checkForUpdate, 60000);
 
-document.getElementById('syncBtn').onclick = ()=> location.reload();
+document.getElementById('syncBtn').onclick = ()=>{
+  document.getElementById('syncBtn').classList.add('spinning');
+  location.reload();
+};
 
 document.getElementById('prevWeek').onclick = ()=>{
   autoStartEnabled = false;
