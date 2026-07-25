@@ -237,7 +237,7 @@
 </div>
 
 <script>
-const APP_VERSION = '20260725T171326Z';
+const APP_VERSION = '20260725T171805Z';
 const catColor = {
   plan:'var(--violet)', build:'var(--amber)', team:'var(--teal)',
   content:'var(--coral)', admin:'var(--slate)', open:'var(--green)',
@@ -465,6 +465,7 @@ const STORAGE_KEY = 'blockTimerState_v2';
 function beep(freq=880, dur=180, vol=0.3){
   try{
     if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if(audioCtx.state === 'suspended'){ audioCtx.resume(); }
     const osc = audioCtx.createOscillator();
     const gain = audioCtx.createGain();
     osc.frequency.value = freq;
@@ -475,6 +476,13 @@ function beep(freq=880, dur=180, vol=0.3){
     osc.stop(audioCtx.currentTime + dur/1000);
   }catch(e){}
 }
+
+function primeAudio(){
+  if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  if(audioCtx.state === 'suspended'){ audioCtx.resume(); }
+}
+document.addEventListener('touchstart', primeAudio, {once:true});
+document.addEventListener('click', primeAudio, {once:true});
 function tripleBeep(){ beep(880,150); setTimeout(()=>beep(880,150),250); setTimeout(()=>beep(880,150),500); }
 function overtimeBeep(){ beep(660,300,0.35); }
 function startChime(){
@@ -495,7 +503,7 @@ function saveState(){
   try{
     localStorage.setItem(STORAGE_KEY, JSON.stringify({
       weekOffset, currentDayIdx, selectedIdx, quickTimerMinutes, remainingSec, totalSec,
-      running, warned5, warned15, endPrompted, autoStartEnabled, savedAt: Date.now()
+      running, warned5, warned15, endPrompted, autoStartEnabled, lastAutoKey, savedAt: Date.now()
     }));
   }catch(e){}
 }
@@ -1004,6 +1012,7 @@ function restoreState(saved){
 }
 
 const savedOnLoad = loadState();
+if(savedOnLoad && savedOnLoad.lastAutoKey){ lastAutoKey = savedOnLoad.lastAutoKey; }
 renderAll();
 renderQuickTimerButtons();
 restoreState(savedOnLoad);
