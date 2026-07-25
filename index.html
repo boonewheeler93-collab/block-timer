@@ -237,6 +237,7 @@
 </div>
 
 <script>
+const APP_VERSION = '20260725T171326Z';
 const catColor = {
   plan:'var(--violet)', build:'var(--amber)', team:'var(--teal)',
   content:'var(--coral)', admin:'var(--slate)', open:'var(--green)',
@@ -771,6 +772,27 @@ document.getElementById('btnReset').onclick = ()=>{
   if(selectedIdx===null) return;
   selectBlock(selectedIdx);
 };
+
+function checkForUpdate(){
+  const url = 'https://raw.githubusercontent.com/boonewheeler93-collab/block-timer/main/version.txt?t=' + Date.now();
+  fetch(url, {cache:'no-store'})
+    .then(r => r.ok ? r.text() : null)
+    .then(text => {
+      if(!text) return;
+      const remoteVersion = text.trim();
+      if(remoteVersion && remoteVersion !== APP_VERSION){
+        location.reload();
+      }
+    })
+    .catch(()=>{});
+}
+
+document.addEventListener('visibilitychange', ()=>{
+  if(document.visibilityState === 'visible') checkForUpdate();
+});
+window.addEventListener('focus', checkForUpdate);
+window.addEventListener('pageshow', checkForUpdate);
+setInterval(checkForUpdate, 60000);
 
 document.getElementById('syncBtn').onclick = ()=> location.reload();
 
