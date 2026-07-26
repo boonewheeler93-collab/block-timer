@@ -240,7 +240,7 @@
 </div>
 
 <script>
-const APP_VERSION = '20260726T141612Z';
+const APP_VERSION = '20260726T204508Z';
 const catColor = {
   plan:'var(--violet)', build:'var(--amber)', team:'var(--teal)',
   content:'var(--coral)', admin:'var(--slate)', open:'var(--green)',
@@ -978,6 +978,12 @@ function autoWatchTick(){
           startTimer(false);
         }
       }
+    } else if(selectedIdx !== null && remainingSec < -1200){
+      // Nothing's currently underway, and this selection is way past just
+      // "running long" (20+ min overtime) -- it's stale from an earlier
+      // session with nothing to hand off to. Clear it rather than leaving
+      // an ever-climbing overtime number hanging around for hours.
+      resetTimerState();
     }
   }
 }
