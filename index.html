@@ -240,7 +240,7 @@
 </div>
 
 <script>
-const APP_VERSION = '20260726T011221Z';
+const APP_VERSION = '20260726T141612Z';
 const catColor = {
   plan:'var(--violet)', build:'var(--amber)', team:'var(--teal)',
   content:'var(--coral)', admin:'var(--slate)', open:'var(--green)',
@@ -318,10 +318,6 @@ const SUNDAY_BLOCKS = [
 // One-off, non-recurring confirmed meetings, keyed by date "YYYY-MM-DD".
 // These get merged into that specific day's block list, sorted by start time.
 const ONEOFF_BLOCKS = {
-  '2026-07-25': [
-    {t:'TEST | Block A', s:'20:15', dur:2, cat:'dream'},
-    {t:'TEST | Block B', s:'20:20', dur:2, cat:'dream'},
-  ],
   '2026-07-27': [
     {t:'ATM Catoosa Pickup & Lunch In', s:'12:00', dur:120, cat:'org'},
   ],
@@ -902,8 +898,16 @@ function syncAutoToggleUI(){
 function jumpToToday(){
   const today = dayNameFromDate(new Date());
   if(!today) return;
+  const targetIdx = DAY_LABELS.indexOf(today);
+  const changed = (weekOffset !== 0 || currentDayIdx !== targetIdx);
   weekOffset = 0;
-  currentDayIdx = DAY_LABELS.indexOf(today);
+  currentDayIdx = targetIdx;
+  if(changed){
+    // The view was on a different day/week -- any selected block belonged to
+    // that context and is no longer valid. Clear it so today's real schedule
+    // gets evaluated fresh instead of silently pointing at the wrong block.
+    resetTimerState();
+  }
   renderTabs();
   renderWeekNav();
   renderDayNote();
