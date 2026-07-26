@@ -240,7 +240,7 @@
 </div>
 
 <script>
-const APP_VERSION = '20260725T182242Z';
+const APP_VERSION = '20260726T010801Z';
 const catColor = {
   plan:'var(--violet)', build:'var(--amber)', team:'var(--teal)',
   content:'var(--coral)', admin:'var(--slate)', open:'var(--green)',
@@ -318,9 +318,6 @@ const SUNDAY_BLOCKS = [
 // One-off, non-recurring confirmed meetings, keyed by date "YYYY-MM-DD".
 // These get merged into that specific day's block list, sorted by start time.
 const ONEOFF_BLOCKS = {
-  '2026-07-25': [
-    {t:'TEST | Auto-Start Check 5', s:'13:05', dur:5, cat:'dream'},
-  ],
   '2026-07-27': [
     {t:'ATM Catoosa Pickup & Lunch In', s:'12:00', dur:120, cat:'org'},
   ],
@@ -949,24 +946,29 @@ function autoWatchTick(){
     return;
   }
 
-  // Nothing currently active? Check if "now" falls inside a block already underway
-  // (e.g. the page was just opened, or auto-start was just turned on, mid-meeting).
-  if(selectedIdx === null && quickTimerMinutes === null){
+  // Catch up if: nothing's selected yet, OR the current block is sitting in
+  // overtime and a genuinely different block has since started (e.g. the
+  // phone was locked/backgrounded through the exact start-minute transition).
+  if(quickTimerMinutes === null && (selectedIdx === null || remainingSec < 0)){
     const ongoingIdx = findOngoingBlockIndex(blocks, now);
     if(ongoingIdx !== -1){
-      const catchUpKey = 'ongoing-' + dateKey(now) + '-' + ongoingIdx;
-      if(catchUpKey !== lastAutoKey){
-        lastAutoKey = catchUpKey;
-        const b = blocks[ongoingIdx];
-        const elapsedSec = toSecondsOfDay(now) - blockStartSeconds(b);
-        selectBlock(ongoingIdx);
-        remainingSec = Math.max(0, totalSec - elapsedSec);
-        warned15 = remainingSec <= 900;
-        warned5 = remainingSec <= 300;
-        warned150 = remainingSec <= 150;
-        updateDisplay();
-        updateFillBar();
-        startTimer(false);
+      const currentSig = selectedIdx !== null ? blockSignature(blocks[selectedIdx]) : null;
+      const ongoingSig = blockSignature(blocks[ongoingIdx]);
+      if(ongoingSig !== currentSig){
+        const catchUpKey = 'ongoing-' + dateKey(now) + '-' + ongoingIdx;
+        if(catchUpKey !== lastAutoKey){
+          lastAutoKey = catchUpKey;
+          const b = blocks[ongoingIdx];
+          const elapsedSec = toSecondsOfDay(now) - blockStartSeconds(b);
+          selectBlock(ongoingIdx);
+          remainingSec = Math.max(0, totalSec - elapsedSec);
+          warned15 = remainingSec <= 900;
+          warned5 = remainingSec <= 300;
+          warned150 = remainingSec <= 150;
+          updateDisplay();
+          updateFillBar();
+          startTimer(false);
+        }
       }
     }
   }
