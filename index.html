@@ -240,7 +240,7 @@
 </div>
 
 <script>
-const APP_VERSION = '20260727T113207Z';
+const APP_VERSION = '20260727T123727Z';
 const catColor = {
   plan:'var(--violet)', build:'var(--amber)', team:'var(--teal)',
   content:'var(--coral)', admin:'var(--slate)', open:'var(--green)',
@@ -814,7 +814,6 @@ function updateFillBar(){
     const fillEl = document.getElementById('fill-' + selectedIdx);
     if(fillEl){
       fillEl.style.width = pct + '%';
-      fillEl.classList.toggle('overtime', remainingSec <= 0);
     }
   } else if(quickTimerMinutes !== null){
     const qtFill = document.getElementById('qt-fill-' + quickTimerMinutes);
