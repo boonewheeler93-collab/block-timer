@@ -240,7 +240,7 @@
 </div>
 
 <script>
-const APP_VERSION = '20260727T110536Z';
+const APP_VERSION = '20260727T110907Z';
 const catColor = {
   plan:'var(--violet)', build:'var(--amber)', team:'var(--teal)',
   content:'var(--coral)', admin:'var(--slate)', open:'var(--green)',
@@ -893,10 +893,9 @@ function checkForUpdate(){
         // Set a cooldown BEFORE navigating, so even if the next load somehow
         // still mismatches, it cannot immediately reload again.
         sessionStorage.setItem('updateCooldownUntil', String(Date.now() + 20000));
-        const bust = (location.href.includes('?') ? '&' : '?') + '_r=' + Date.now();
         const syncBtnEl = document.getElementById('syncBtn');
         if(syncBtnEl) syncBtnEl.classList.add('spinning');
-        location.href = location.pathname + bust;
+        location.href = 'https://boonewheeler93-collab.github.io/block-timer/?_r=' + Date.now();
       }
     })
     .catch(()=>{});
