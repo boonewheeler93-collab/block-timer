@@ -61,7 +61,7 @@
 
   .tabs{ display:flex; gap:5px; margin-bottom:16px; flex-wrap:wrap; }
   .tab{
-    flex:1; min-width:14%; text-align:center; padding:8px 3px; border-radius:8px;
+    flex:1; min-width:12%; text-align:center; padding:8px 3px; border-radius:8px;
     font-family:'Barlow Condensed',sans-serif; font-weight:600; font-size:13px;
     letter-spacing:0.02em; text-transform:uppercase; cursor:pointer;
     background:var(--bg-raised); color:var(--ink-dim); border:1px solid var(--hairline);
@@ -240,7 +240,7 @@
 </div>
 
 <script>
-const APP_VERSION = '20260727T110907Z';
+const APP_VERSION = '20260727T113207Z';
 const catColor = {
   plan:'var(--violet)', build:'var(--amber)', team:'var(--teal)',
   content:'var(--coral)', admin:'var(--slate)', open:'var(--green)',
@@ -249,7 +249,6 @@ const catColor = {
 
 // All durations in minutes. Times are 24-hour "HH:MM".
 const MONDAY_A = [
-  {t:'Journey | Men\'s Group', s:'06:00', dur:90, cat:'team'},
   {t:'PLAN | Day', s:'09:00', dur:15, cat:'plan'},
   {t:'MEET | PREP', s:'09:15', dur:30, cat:'team'},
   {t:'Team Meeting Locked In', s:'10:00', dur:60, cat:'org', central:true},
@@ -323,7 +322,56 @@ const ONEOFF_BLOCKS = {
     {t:'BAND | Timesheets', s:'16:00', dur:15, cat:'admin'},
   ],
   '2026-07-27': [
+    {t:'Journey | Men\'s Group', s:'06:00', dur:90, cat:'team'},
     {t:'ATM Catoosa Pickup & Lunch In', s:'12:00', dur:120, cat:'org'},
+  ],
+  '2026-08-17': [
+    {t:'Journey | Men\'s Group', s:'06:00', dur:90, cat:'team'},
+  ],
+  '2026-08-31': [
+    {t:'Journey | Men\'s Group', s:'06:00', dur:90, cat:'team'},
+  ],
+  '2026-09-04': [
+    {t:'Journey | Retreat #1 (Stories)', s:'17:00', dur:300, cat:'team'},
+  ],
+  '2026-09-14': [
+    {t:'Journey | Men\'s Group', s:'06:00', dur:90, cat:'team'},
+  ],
+  '2026-09-28': [
+    {t:'Journey | Men\'s Group', s:'06:00', dur:90, cat:'team'},
+  ],
+  '2026-10-12': [
+    {t:'Journey | Men\'s Group', s:'06:00', dur:90, cat:'team'},
+  ],
+  '2026-10-26': [
+    {t:'Journey | Men\'s Group', s:'06:00', dur:90, cat:'team'},
+  ],
+  '2026-11-09': [
+    {t:'Journey | Men\'s Group', s:'06:00', dur:90, cat:'team'},
+  ],
+  '2026-11-23': [
+    {t:'Journey | Men\'s Group', s:'06:00', dur:90, cat:'team'},
+  ],
+  '2026-12-04': [
+    {t:'Journey | Retreat #2 (Spiritual Gifts)', s:'17:00', dur:300, cat:'team'},
+  ],
+  '2026-12-14': [
+    {t:'Journey | Men\'s Group', s:'06:00', dur:90, cat:'team'},
+  ],
+  '2026-12-28': [
+    {t:'Journey | Men\'s Group', s:'06:00', dur:90, cat:'team'},
+  ],
+  '2027-01-11': [
+    {t:'Journey | Men\'s Group', s:'06:00', dur:90, cat:'team'},
+  ],
+  '2027-01-25': [
+    {t:'Journey | Men\'s Group', s:'06:00', dur:90, cat:'team'},
+  ],
+  '2027-02-08': [
+    {t:'Journey | Men\'s Group', s:'06:00', dur:90, cat:'team'},
+  ],
+  '2027-02-19': [
+    {t:'Journey | Final Retreat (Commencement)', s:'17:00', dur:300, cat:'team'},
   ],
   '2026-07-28': [
     {t:'Misters for Sisters Recruiting Convo', s:'10:30', dur:30, cat:'org'},
@@ -390,6 +438,7 @@ const DAY_CONFIG = [
   {label:'Tue', offset:1},
   {label:'Wed', offset:2},
   {label:'Thu', offset:3},
+  {label:'Fri', offset:4},
   {label:'Sat', offset:5},
   {label:'Sun', offset:6},
 ];
@@ -424,7 +473,8 @@ function getBlocksAndNote(dayIdx, date){
     return { blocks: mergeOneOffs(isNew ? WED_NEW : WED_OLD, date), note: isNew ? 'Switch is back \u2014 noon start' : 'pre-Switch schedule' };
   }
   if(dayIdx === 3){ return { blocks: mergeOneOffs(THURSDAY_BLOCKS, date), note: '' }; }
-  if(dayIdx === 4){ return { blocks: mergeOneOffs(SATURDAY_BLOCKS, date), note: '' }; }
+  if(dayIdx === 4){ return { blocks: mergeOneOffs([], date), note: '' }; } // Fri: protected day off by default
+  if(dayIdx === 5){ return { blocks: mergeOneOffs(SATURDAY_BLOCKS, date), note: '' }; }
   return { blocks: mergeOneOffs(SUNDAY_BLOCKS, date), note: '' };
 }
 
@@ -433,7 +483,7 @@ function fmtDate(date){
 }
 
 function dayNameFromDate(date){
-  const map = {1:'Mon', 2:'Tue', 3:'Wed', 4:'Thu', 6:'Sat', 0:'Sun'};
+  const map = {1:'Mon', 2:'Tue', 3:'Wed', 4:'Thu', 5:'Fri', 6:'Sat', 0:'Sun'};
   return map[date.getDay()] !== undefined ? map[date.getDay()] : null;
 }
 
