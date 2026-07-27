@@ -249,7 +249,7 @@
 </div>
 
 <script>
-const APP_VERSION = '20260727T144501Z';
+const APP_VERSION = '20260727T145609Z';
 const catColor = {
   plan:'var(--violet)', build:'var(--amber)', team:'var(--teal)',
   content:'var(--coral)', admin:'var(--slate)', open:'var(--green)',
@@ -695,6 +695,14 @@ function renderDayNote(){
   document.getElementById('dayNote').textContent = note ? `${date.toLocaleDateString(undefined,{weekday:'long'})}, ${fmtDate(date)} \u2014 ${note}` : `${date.toLocaleDateString(undefined,{weekday:'long'})}, ${fmtDate(date)}`;
 }
 
+function isBlockPastForToday(b){
+  const viewedDate = getDateForDay(weekOffset, currentDayIdx);
+  const now = new Date();
+  if(dateKey(viewedDate) !== dateKey(now)) return false;
+  const endSec = blockStartSeconds(b) + b.dur*60;
+  return toSecondsOfDay(now) >= endSec;
+}
+
 function renderBlockList(){
   const list = document.getElementById('blockList');
   list.innerHTML = '';
@@ -712,7 +720,7 @@ function renderBlockList(){
     const durLabel = h>0 ? `${h}h${m?m+'m':''}` : `${m}m`;
     const centralBadge = b.central ? `<span class="bi-central-badge" title="Central"><img src="data:image/png;base64,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" alt="LC"></span>` : '';
     const sig = blockSignature(b);
-    const isCompleted = completedSigs.has(sig);
+    const isCompleted = completedSigs.has(sig) || isBlockPastForToday(b);
     const fillStyle = isCompleted ? ' style="width:100%"' : '';
     el.innerHTML = `<div class="bi-fill" id="fill-${i}"${fillStyle}></div><div class="bi-content"><div><div class="bi-title">${centralBadge}${b.t}</div><div class="bi-time">${to12Hour(b.s)}</div></div><div class="bi-dur">${durLabel}</div></div>`;
     el.onclick = ()=>{ autoStartEnabled = false; syncAutoToggleUI(); selectBlock(i); };
