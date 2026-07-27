@@ -2,7 +2,10 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Block Timer">
 <title>Block Timer</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -23,7 +26,13 @@
     font-family:'Inter',sans-serif; -webkit-font-smoothing:antialiased;
     min-height:100vh;
   }
-  .wrap{ max-width:480px; margin:0 auto; padding:22px 16px 60px; }
+  .wrap{
+    max-width:480px; margin:0 auto;
+    padding-top: max(22px, env(safe-area-inset-top));
+    padding-left: max(16px, env(safe-area-inset-left));
+    padding-right: max(16px, env(safe-area-inset-right));
+    padding-bottom: max(60px, env(safe-area-inset-bottom));
+  }
   .sub{ font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--org); letter-spacing:0.08em; text-transform:uppercase; }
   h1{ font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:28px; letter-spacing:0.02em; text-transform:uppercase; margin:2px 0 14px; }
 
@@ -240,7 +249,7 @@
 </div>
 
 <script>
-const APP_VERSION = '20260727T124112Z';
+const APP_VERSION = '20260727T142019Z';
 const catColor = {
   plan:'var(--violet)', build:'var(--amber)', team:'var(--teal)',
   content:'var(--coral)', admin:'var(--slate)', open:'var(--green)',
