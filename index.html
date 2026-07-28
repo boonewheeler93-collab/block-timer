@@ -150,15 +150,16 @@
     letter-spacing:0.02em; text-transform:uppercase; background:var(--slate); color:var(--bg);
   }
 
-  .controls{ display:flex; gap:10px; margin-top:18px; }
+  .controls{ display:flex; flex-wrap:wrap; gap:10px; margin-top:18px; }
   .btn{
-    flex:1; padding:13px 8px; border-radius:9px; border:none; cursor:pointer;
+    flex:1 1 calc(50% - 5px); padding:13px 8px; border-radius:9px; border:none; cursor:pointer;
     font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:16px;
     letter-spacing:0.03em; text-transform:uppercase;
   }
   .btn-start{ background:var(--slate); color:var(--bg); }
   .btn-pause{ background:var(--teal); color:var(--bg); }
   .btn-reset{ background:transparent; color:var(--ink-dim); border:1px solid var(--hairline); }
+  .btn-complete{ background:transparent; color:var(--green); border:1px solid var(--green); }
   .btn:disabled{ opacity:0.4; cursor:default; }
 
   .empty-note{ font-size:13px; color:var(--ink-faint); text-align:center; padding:20px 0; }
@@ -238,6 +239,7 @@
       <button class="btn btn-start" id="btnStart" disabled>Start</button>
       <button class="btn btn-pause" id="btnPause" disabled>Pause</button>
       <button class="btn btn-reset" id="btnReset" disabled>Reset</button>
+      <button class="btn btn-complete" id="btnComplete" disabled>&#10003; Complete</button>
     </div>
     <div class="next-prompt" id="nextPrompt" style="display:none;"></div>
   </div>
@@ -249,7 +251,7 @@
 </div>
 
 <script>
-const APP_VERSION = '20260728T155109Z';
+const APP_VERSION = '20260728T174233Z';
 const catColor = {
   plan:'var(--violet)', build:'var(--amber)', team:'var(--teal)',
   content:'var(--coral)', admin:'var(--slate)', open:'var(--green)',
@@ -786,6 +788,7 @@ function selectBlock(i, keepState){
   document.getElementById('btnStart').disabled = false;
   document.getElementById('btnPause').disabled = true;
   document.getElementById('btnReset').disabled = false;
+  document.getElementById('btnComplete').disabled = false;
   document.getElementById('timerPanel').className = 'timer-panel';
   document.getElementById('timerDisplay').className = 'timer-display';
   renderBlockList();
@@ -811,6 +814,7 @@ function resetTimerState(){
   document.getElementById('btnStart').disabled = true;
   document.getElementById('btnPause').disabled = true;
   document.getElementById('btnReset').disabled = true;
+  document.getElementById('btnComplete').disabled = true;
   clearState();
 }
 
@@ -981,6 +985,15 @@ document.getElementById('btnReset').onclick = ()=>{
   selectBlock(selectedIdx);
 };
 
+document.getElementById('btnComplete').onclick = ()=>{
+  if(selectedIdx===null) return;
+  const blocks = getCurrentBlocks();
+  const sig = blockSignature(blocks[selectedIdx]);
+  markCompleted(sig);
+  resetTimerState();
+  renderBlockList();
+};
+
 function checkForUpdate(){
   const cooldownUntil = Number(sessionStorage.getItem('updateCooldownUntil') || 0);
   if(Date.now() < cooldownUntil) return;
@@ -1091,8 +1104,10 @@ function autoWatchTick(){
 
   const exactIdx = blocks.findIndex(b => b.s === hhmm);
   if(exactIdx !== -1){
+    ensureCompletedForToday();
+    const alreadyDone = completedSigs.has(blockSignature(blocks[exactIdx]));
     const key = hhmm + '-' + exactIdx;
-    if(key !== lastAutoKey){
+    if(key !== lastAutoKey && !alreadyDone){
       lastAutoKey = key;
       selectBlock(exactIdx);
       startTimer(false);
@@ -1105,7 +1120,9 @@ function autoWatchTick(){
   // phone was locked/backgrounded through the exact start-minute transition).
   if(quickTimerMinutes === null && (selectedIdx === null || remainingSec < 0)){
     const ongoingIdx = findOngoingBlockIndex(blocks, now);
-    if(ongoingIdx !== -1){
+    ensureCompletedForToday();
+    const ongoingAlreadyDone = ongoingIdx !== -1 && completedSigs.has(blockSignature(blocks[ongoingIdx]));
+    if(ongoingIdx !== -1 && !ongoingAlreadyDone){
       const currentSig = selectedIdx !== null ? blockSignature(blocks[selectedIdx]) : null;
       const ongoingSig = blockSignature(blocks[ongoingIdx]);
       if(ongoingSig !== currentSig){
@@ -1163,6 +1180,7 @@ function startQuickTimer(minutes){
   document.getElementById('btnStart').disabled = false;
   document.getElementById('btnPause').disabled = true;
   document.getElementById('btnReset').disabled = false;
+  document.getElementById('btnComplete').disabled = true;
   document.getElementById('timerPanel').className = 'timer-panel';
   document.getElementById('timerDisplay').className = 'timer-display';
   document.getElementById('upNext').textContent = '';
@@ -1249,6 +1267,7 @@ function restoreState(saved){
     document.getElementById('btnStart').disabled = false;
     document.getElementById('btnPause').disabled = true;
     document.getElementById('btnReset').disabled = false;
+    document.getElementById('btnComplete').disabled = true;
   } else {
     selectBlock(resolvedIdx, true);
   }
