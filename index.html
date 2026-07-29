@@ -193,6 +193,45 @@
   .qt-fill.critical, .qt-fill.overtime{ background:var(--danger); }
   .qt-btn-label{ position:relative; z-index:1; }
   .qt-btn:active{ background:var(--slate); color:var(--bg); }
+  @media (min-width: 900px){
+    .wrap{
+      max-width: 1040px;
+      display: grid;
+      grid-template-columns: 1.3fr 1fr;
+      column-gap: 32px;
+      row-gap: 0;
+      grid-template-areas:
+        "masthead masthead"
+        "clock    timer"
+        "weeknav  timer"
+        "tabs     timer"
+        "daynote  timer"
+        "autotoggle timer"
+        "blocklist quicktimer";
+      padding-top: max(32px, env(safe-area-inset-top));
+    }
+    .masthead-row{ grid-area: masthead; margin-bottom: 8px; }
+    .clock-panel{ grid-area: clock; }
+    .week-nav{ grid-area: weeknav; }
+    .tabs{ grid-area: tabs; }
+    .day-note{ grid-area: daynote; }
+    .auto-toggle{ grid-area: autotoggle; }
+    .block-list{
+      grid-area: blocklist;
+      max-height: 66vh;
+      overflow-y: auto;
+      padding-right: 6px;
+    }
+    .timer-panel{
+      grid-area: timer;
+      position: sticky;
+      top: 32px;
+      align-self: start;
+      height: fit-content;
+      margin-top: 0;
+    }
+    .quick-timer-section{ grid-area: quicktimer; align-self: start; }
+  }
 </style>
 </head>
 <body>
@@ -251,7 +290,7 @@
 </div>
 
 <script>
-const APP_VERSION = '20260729T132412Z';
+const APP_VERSION = '20260729T133114Z';
 const catColor = {
   plan:'var(--violet)', build:'var(--amber)', team:'var(--teal)',
   content:'var(--coral)', admin:'var(--slate)', open:'var(--green)',
