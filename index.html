@@ -290,7 +290,7 @@
 </div>
 
 <script>
-const APP_VERSION = '20260811T143000Z';
+const APP_VERSION = '20260822T220000Z';
 const catColor = {
   plan:'var(--violet)', build:'var(--amber)', team:'var(--teal)',
   content:'var(--coral)', admin:'var(--slate)', open:'var(--green)',
@@ -443,11 +443,59 @@ const ONEOFF_BLOCKS = {
   '2026-08-12': [
     {t:'Daniel + Boone AI Chat', s:'14:00', dur:30, cat:'org'},
   ],
+  '2026-08-25': [
+    {t:'Socials Chili Cook Off Recording', s:'09:30', dur:30, cat:'org'},
+  ],
 };
 
 // Full one-time day-pattern overrides, keyed by date "YYYY-MM-DD". Used when an entire
 // day's shape (not just an extra meeting) is different from the usual template for one occurrence.
 const DAY_OVERRIDES = {
+  '2026-08-24': [
+    {t:'PLAN | Day', s:'09:00', dur:15, cat:'plan'},
+    {t:'MEET | PREP', s:'09:15', dur:30, cat:'team'},
+    {t:'Team Meeting-Offsite Messenger', s:'10:00', dur:60, cat:'org'},
+    {t:'Team Lunch OUT in Zona Rosa and visit build site', s:'11:00', dur:90, cat:'org'},
+    {t:'ADMIN | Schedule', s:'13:00', dur:60, cat:'admin'},
+    {t:'Associate Development Time w/ Megan', s:'14:30', dur:60, cat:'org'},
+    {t:'🟢 OPEN | Flex', s:'15:30', dur:60, cat:'open'},
+  ],
+  '2026-08-31': [
+    {t:'PLAN | Day', s:'09:00', dur:15, cat:'plan'},
+    {t:'Team Lead', s:'09:30', dur:30, cat:'org', central:true},
+    {t:'Team Meeting Extended', s:'10:00', dur:90, cat:'org', central:true},
+    {t:'Team Lunch IN', s:'11:30', dur:30, cat:'org'},
+    {t:'ADMIN | Schedule', s:'13:00', dur:60, cat:'admin'},
+    {t:'🟢 OPEN | Flex', s:'15:30', dur:60, cat:'open'},
+    {t:'Sisters Call Time', s:'16:30', dur:15, cat:'org'},
+  ],
+  '2026-09-03': [
+    {t:'PLAN | Day', s:'09:00', dur:15, cat:'plan'},
+    {t:'🛠️ BUILD | SWITCH', s:'09:15', dur:60, cat:'build'},
+    {t:'🛠️ BUILD | Slides', s:'10:15', dur:60, cat:'build'},
+    {t:'PREP | Weekend', s:'11:15', dur:105, cat:'build'},
+    {t:'ADMIN | PCO', s:'13:00', dur:15, cat:'admin'},
+    {t:'Team Time', s:'13:15', dur:60, cat:'org', central:true},
+    {t:'Walk Through', s:'14:15', dur:60, cat:'org', central:true},
+    {t:'Mike/Boone 1:1 and Slide Run Through', s:'15:00', dur:60, cat:'org'},
+  ],
+  '2026-09-07': [
+    {t:'PLAN | Day', s:'09:00', dur:15, cat:'plan'},
+    {t:'MEET | PREP', s:'09:15', dur:30, cat:'team'},
+    {t:'ADMIN | Schedule', s:'13:00', dur:60, cat:'admin'},
+    {t:'🟢 OPEN | Flex', s:'15:30', dur:60, cat:'open'},
+  ],
+  '2026-09-10': [
+    {t:'PLAN | Day', s:'09:00', dur:15, cat:'plan'},
+    {t:'🛠️ BUILD | SWITCH', s:'09:15', dur:60, cat:'build'},
+    {t:'🛠️ BUILD | Slides', s:'10:15', dur:60, cat:'build'},
+    {t:'PREP | Weekend', s:'11:15', dur:105, cat:'build'},
+    {t:'ADMIN | PCO', s:'13:00', dur:15, cat:'admin'},
+    {t:'Team Mtg', s:'13:00', dur:75, cat:'org'},
+    {t:'Boone\'s Birthday', s:'14:15', dur:30, cat:'org'},
+    {t:'Walk Through', s:'14:15', dur:60, cat:'org', central:true},
+    {t:'Mike/Boone 1:1 and Slide Run Through', s:'15:00', dur:60, cat:'org'},
+  ],
   '2026-08-11': [
     {t:'PLAN | Day', s:'09:00', dur:15, cat:'plan'},
     {t:'🛠️ BUILD | WKND', s:'09:15', dur:60, cat:'build'},
