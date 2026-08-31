@@ -290,7 +290,7 @@
 </div>
 
 <script>
-const APP_VERSION = '20260826T213200Z';
+const APP_VERSION = '20260831T113500Z';
 const catColor = {
   plan:'var(--violet)', build:'var(--amber)', team:'var(--teal)',
   content:'var(--coral)', admin:'var(--slate)', open:'var(--green)',
@@ -461,6 +461,9 @@ const ONEOFF_BLOCKS = {
   '2026-09-09': [
     {t:'Lunch and Leadership', s:'12:00', dur:60, cat:'org'},
   ],
+  '2026-09-14': [
+    {t:'Team Lunch IN', s:'11:30', dur:30, cat:'org'},
+  ],
 };
 
 // Full one-time day-pattern overrides, keyed by date "YYYY-MM-DD". Used when an entire
@@ -506,9 +509,10 @@ const DAY_OVERRIDES = {
     {t:'🛠️ BUILD | Slides', s:'10:15', dur:60, cat:'build'},
     {t:'PREP | Weekend', s:'11:15', dur:105, cat:'build'},
     {t:'ADMIN | PCO', s:'13:00', dur:15, cat:'admin'},
-    {t:'Team Mtg', s:'13:00', dur:75, cat:'org'},
+    {t:'Game Day Weekend Walk Through Ready', s:'13:00', dur:15, cat:'org'},
+    {t:'Team Time', s:'13:00', dur:60, cat:'org', central:true},
+    {t:'Walk Through', s:'14:00', dur:60, cat:'org', central:true},
     {t:'Boone\'s Birthday', s:'14:15', dur:30, cat:'org'},
-    {t:'Walk Through', s:'14:15', dur:60, cat:'org', central:true},
     {t:'Mike/Boone 1:1 and Slide Run Through', s:'15:00', dur:60, cat:'org'},
   ],
   '2026-08-11': [
