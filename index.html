@@ -290,7 +290,7 @@
 </div>
 
 <script>
-const APP_VERSION = '20260902T170300Z';
+const APP_VERSION = '20260914T153200Z';
 const catColor = {
   plan:'var(--violet)', build:'var(--amber)', team:'var(--teal)',
   content:'var(--coral)', admin:'var(--slate)', open:'var(--green)',
@@ -382,9 +382,13 @@ const ONEOFF_BLOCKS = {
   ],
   '2026-09-14': [
     {t:'Journey | Men\'s Group', s:'06:00', dur:90, cat:'team'},
+    {t:'live speak run through', s:'11:30', dur:30, cat:'org'},
+    {t:'Weekend stagetime chat through', s:'12:00', dur:30, cat:'org'},
+    {t:'Legacy Celebration Stagetime session (Optional!)', s:'12:30', dur:60, cat:'org'},
   ],
   '2026-09-28': [
     {t:'Journey | Men\'s Group', s:'06:00', dur:90, cat:'team'},
+    {t:'Team Lunch IN', s:'11:30', dur:30, cat:'org'},
   ],
   '2026-10-12': [
     {t:'Journey | Men\'s Group', s:'06:00', dur:90, cat:'team'},
@@ -464,14 +468,27 @@ const ONEOFF_BLOCKS = {
   '2026-09-09': [
     {t:'Lunch and Leadership', s:'12:00', dur:60, cat:'org'},
   ],
-  '2026-09-14': [
-    {t:'Team Lunch IN', s:'11:30', dur:30, cat:'org'},
+  '2026-09-20': [
+    {t:'Reset Walk/Through Weekend Ready', s:'14:00', dur:30, cat:'org'},
+  ],
+  '2026-09-26': [
+    {t:'Liberty Fall Fest Parade', s:'10:00', dur:180, cat:'org'},
   ],
 };
 
 // Full one-time day-pattern overrides, keyed by date "YYYY-MM-DD". Used when an entire
 // day's shape (not just an extra meeting) is different from the usual template for one occurrence.
 const DAY_OVERRIDES = {
+  '2026-09-17': [
+    {t:'PLAN | Day', s:'09:00', dur:15, cat:'plan'},
+    {t:'🛠️ BUILD | SWITCH', s:'09:15', dur:60, cat:'build'},
+    {t:'🛠️ BUILD | Slides', s:'10:15', dur:60, cat:'build'},
+    {t:'PREP | Weekend', s:'11:15', dur:105, cat:'build'},
+    {t:'ADMIN | PCO', s:'13:00', dur:15, cat:'admin'},
+    {t:'Garage and Host Team Cleanout', s:'13:00', dur:60, cat:'org'},
+    {t:'Walk Through', s:'14:00', dur:60, cat:'org', central:true},
+    {t:'Mike/Boone 1:1 and Slide Run Through', s:'15:00', dur:60, cat:'org'},
+  ],
   '2026-08-24': [
     {t:'PLAN | Day', s:'09:00', dur:15, cat:'plan'},
     {t:'MEET | PREP', s:'09:15', dur:30, cat:'team'},
