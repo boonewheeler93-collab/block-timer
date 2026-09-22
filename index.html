@@ -290,7 +290,7 @@
 </div>
 
 <script>
-const APP_VERSION = '20260914T153200Z';
+const APP_VERSION = '20260922T174600Z';
 const catColor = {
   plan:'var(--violet)', build:'var(--amber)', team:'var(--teal)',
   content:'var(--coral)', admin:'var(--slate)', open:'var(--green)',
@@ -389,9 +389,15 @@ const ONEOFF_BLOCKS = {
   '2026-09-28': [
     {t:'Journey | Men\'s Group', s:'06:00', dur:90, cat:'team'},
     {t:'Team Lunch IN', s:'11:30', dur:30, cat:'org'},
+    {t:'Balloon Drop Setup', s:'14:00', dur:65, cat:'org'},
+  ],
+  '2026-10-03': [
+    {t:'Family Photos w/ Mak Optional', s:'10:00', dur:90, cat:'org'},
   ],
   '2026-10-12': [
     {t:'Journey | Men\'s Group', s:'06:00', dur:90, cat:'team'},
+    {t:'Team Lunch IN', s:'11:30', dur:30, cat:'org'},
+    {t:'Thomas\'s providing staff lunch', s:'12:00', dur:60, cat:'org'},
   ],
   '2026-10-26': [
     {t:'Journey | Men\'s Group', s:'06:00', dur:90, cat:'team'},
@@ -479,6 +485,25 @@ const ONEOFF_BLOCKS = {
 // Full one-time day-pattern overrides, keyed by date "YYYY-MM-DD". Used when an entire
 // day's shape (not just an extra meeting) is different from the usual template for one occurrence.
 const DAY_OVERRIDES = {
+  '2026-09-23': [
+    {t:'Family Time', s:'09:00', dur:180, cat:'family'},
+    {t:'PLAN | Day', s:'12:00', dur:15, cat:'plan'},
+    {t:'🛠️ BUILD | Socials', s:'12:15', dur:60, cat:'build'},
+    {t:'It\'s TEAM TIME =)', s:'13:00', dur:120, cat:'org'},
+    {t:'ADMIN | Catch Up', s:'15:30', dur:60, cat:'admin'},
+    {t:'PREP | SWITCH', s:'16:30', dur:60, cat:'build'},
+    {t:'REHEARSAL | SWITCH', s:'17:30', dur:75, cat:'build'},
+    {t:'SERVICE | SWITCH', s:'19:00', dur:90, cat:'build'},
+  ],
+  '2026-10-05': [
+    {t:'PLAN | Day', s:'09:00', dur:15, cat:'plan'},
+    {t:'MEET | PREP', s:'09:15', dur:30, cat:'team'},
+    {t:'Team Meeting Locked In', s:'10:00', dur:60, cat:'org'},
+    {t:'Team Lunch OUT!', s:'11:00', dur:90, cat:'org'},
+    {t:'ADMIN | Schedule', s:'13:00', dur:60, cat:'admin'},
+    {t:'Associate Development Time', s:'14:30', dur:60, cat:'org'},
+    {t:'🟢 OPEN | Flex', s:'15:30', dur:60, cat:'open'},
+  ],
   '2026-09-17': [
     {t:'PLAN | Day', s:'09:00', dur:15, cat:'plan'},
     {t:'🛠️ BUILD | SWITCH', s:'09:15', dur:60, cat:'build'},
