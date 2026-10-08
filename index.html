@@ -46,6 +46,9 @@
   .sync-btn:active{ background:var(--slate); color:var(--bg); transform:rotate(45deg); }
   @keyframes spin-sync{ from{ transform:rotate(0deg); } to{ transform:rotate(360deg); } }
   .sync-btn.spinning{ animation: spin-sync 0.6s linear infinite; }
+  .masthead-btns{ display:flex; gap:8px; }
+  .ask-claude-btn{ font-size:18px; }
+  .ask-claude-btn:active{ background:var(--slate); color:var(--bg); }
 
   .clock-panel{
     background:var(--bg-raised); border:1px solid var(--hairline); border-radius:12px;
@@ -241,7 +244,10 @@
       <div class="sub">Northland &middot; Block Timer</div>
       <h1>Stay On Time</h1>
     </div>
-    <button id="syncBtn" class="sync-btn" title="Refresh">&#8635;</button>
+    <div class="masthead-btns">
+      <button id="syncBtn" class="sync-btn" title="Refresh">&#8635;</button>
+      <button id="askClaudeBtn" class="sync-btn ask-claude-btn" title="Ask Claude to sync">&#128172;</button>
+    </div>
   </div>
 
   <div class="clock-panel">
@@ -290,7 +296,7 @@
 </div>
 
 <script>
-const APP_VERSION = '20261008T001500Z';
+const APP_VERSION = '20261008T043000Z';
 const catColor = {
   plan:'var(--violet)', build:'var(--amber)', team:'var(--teal)',
   content:'var(--coral)', admin:'var(--slate)', open:'var(--green)',
@@ -1298,6 +1304,11 @@ setInterval(checkForUpdate, 60000);
 document.getElementById('syncBtn').onclick = ()=>{
   document.getElementById('syncBtn').classList.add('spinning');
   location.reload();
+};
+
+document.getElementById('askClaudeBtn').onclick = ()=>{
+  const prompt = 'Run the schedule skill for the next 3 weeks';
+  window.open('https://claude.ai/new?q=' + encodeURIComponent(prompt), '_blank');
 };
 
 document.getElementById('prevWeek').onclick = ()=>{
