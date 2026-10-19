@@ -302,7 +302,7 @@
 </div>
 
 <script>
-const APP_VERSION = '20261013T200000Z';
+const APP_VERSION = '20261019T143000Z';
 const catColor = {
   plan:'var(--violet)', build:'var(--amber)', team:'var(--teal)',
   content:'var(--coral)', admin:'var(--slate)', open:'var(--green)',
@@ -381,6 +381,19 @@ const SUNDAY_BLOCKS = [
 // One-off, non-recurring confirmed meetings, keyed by date "YYYY-MM-DD".
 // These get merged into that specific day's block list, sorted by start time.
 const ONEOFF_BLOCKS = {
+  '2026-11-03': [
+    {t:'Banner Revisions', s:'11:00', dur:60, cat:'org', central:true},
+  ],
+  '2026-11-04': [
+    {t:'KC AREA Hang at EKC', s:'12:00', dur:90, cat:'org', central:true},
+  ],
+  '2026-11-09': [
+    {t:'Team Lunch IN', s:'11:30', dur:30, cat:'org', central:true},
+    {t:'Boone/Mike 1:1 Touch base before i leave for the week', s:'13:30', dur:30, cat:'org'},
+    {t:'Catch Up Boone & Megan', s:'14:00', dur:30, cat:'org'},
+    {t:'Anchor Planning Meeting', s:'14:30', dur:60, cat:'org', central:true},
+    {t:'Ana | Boone 1:1', s:'14:30', dur:30, cat:'org'},
+  ],
   '2026-10-13': [
     {t:'GT Time with EKC/NKC Teams', s:'10:00', dur:135, cat:'org', central:true},
     {t:'Lunch - Landen', s:'12:00', dur:60, cat:'org'},
@@ -546,9 +559,9 @@ const DAY_OVERRIDES = {
     {t:'Team Meeting Locked In', s:'10:00', dur:60, cat:'org', central:true},
     {t:'Team Lunch OUT!', s:'11:00', dur:90, cat:'org', central:true},
     {t:'Thomas\'s providing staff lunch (new date)', s:'11:30', dur:75, cat:'org', central:true},
+    {t:'Swodeo Yap', s:'13:30', dur:30, cat:'org', central:true},
     {t:'ADMIN | Schedule', s:'13:00', dur:60, cat:'admin'},
     {t:'Associate Development- Mike', s:'14:30', dur:60, cat:'org', central:true},
-    {t:'Ana | Boone 1:1', s:'14:30', dur:30, cat:'org'},
     {t:'🟢 OPEN | Flex', s:'15:30', dur:60, cat:'open'},
   ],
   '2026-09-23': [
