@@ -302,7 +302,7 @@
 </div>
 
 <script>
-const APP_VERSION = '20261019T150000Z';
+const APP_VERSION = '20261026T170000Z';
 const catColor = {
   plan:'var(--violet)', build:'var(--amber)', team:'var(--teal)',
   content:'var(--coral)', admin:'var(--slate)', open:'var(--green)',
@@ -383,6 +383,13 @@ const SUNDAY_BLOCKS = [
 const ONEOFF_BLOCKS = {
   '2026-11-03': [
     {t:'Banner Revisions', s:'11:00', dur:60, cat:'org', central:true},
+  ],
+  '2026-11-11': [
+    {t:'Lunch and Leadership', s:'12:00', dur:60, cat:'org', central:true},
+  ],
+  '2026-11-17': [
+    {t:'November Worship Group Call', s:'10:00', dur:60, cat:'org', central:true},
+    {t:'Boone/Steph Check In', s:'11:00', dur:30, cat:'org', central:true},
   ],
   '2026-11-04': [
     {t:'KC AREA Hang at EKC', s:'12:00', dur:90, cat:'org', central:true},
@@ -524,6 +531,33 @@ const ONEOFF_BLOCKS = {
 // Full one-time day-pattern overrides, keyed by date "YYYY-MM-DD". Used when an entire
 // day's shape (not just an extra meeting) is different from the usual template for one occurrence.
 const DAY_OVERRIDES = {
+  '2026-10-26': [
+    {t:'PLAN | Day', s:'09:00', dur:15, cat:'plan'},
+    {t:'Team Meeting Extended', s:'10:00', dur:90, cat:'org', central:true},
+    {t:'ADMIN | Schedule', s:'13:00', dur:60, cat:'admin'},
+    {t:'TEAM | Development', s:'14:30', dur:60, cat:'team'},
+    {t:'🟢 OPEN | Flex', s:'15:30', dur:60, cat:'open'},
+  ],
+  '2026-11-12': [
+    {t:'PLAN | Day', s:'09:00', dur:15, cat:'plan'},
+    {t:'🛠️ BUILD | SWITCH', s:'09:15', dur:60, cat:'build'},
+    {t:'🛠️ BUILD | Slides', s:'10:15', dur:60, cat:'build'},
+    {t:'PREP | Weekend', s:'11:15', dur:105, cat:'build'},
+    {t:'ADMIN | PCO', s:'13:00', dur:15, cat:'admin', pco:true},
+    {t:'Team Time', s:'13:00', dur:60, cat:'org', central:true},
+    {t:'Walk Through', s:'14:00', dur:60, cat:'org', central:true},
+  ],
+  '2026-11-16': [
+    {t:'PLAN | Day', s:'09:00', dur:15, cat:'plan'},
+    {t:'MEET | PREP', s:'09:15', dur:30, cat:'team'},
+    {t:'Team Meeting Locked In', s:'10:00', dur:60, cat:'org', central:true},
+    {t:'TEAM | Development', s:'11:15', dur:60, cat:'team'},
+    {t:'ADMIN | Schedule', s:'13:00', dur:60, cat:'admin'},
+    {t:'ATM Banner Final Approval', s:'13:00', dur:45, cat:'org', central:true},
+    {t:'Associate Development- Boone', s:'14:30', dur:60, cat:'org', central:true},
+    {t:'Ana | Boone 1:1', s:'14:30', dur:30, cat:'org'},
+    {t:'🟢 OPEN | Flex', s:'15:30', dur:60, cat:'open'},
+  ],
   '2026-11-02': [
     {t:'PLAN | Day', s:'09:00', dur:15, cat:'plan'},
     {t:'MEET | PREP', s:'09:15', dur:30, cat:'team'},
