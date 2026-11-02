@@ -302,7 +302,7 @@
 </div>
 
 <script>
-const APP_VERSION = '20261027T150000Z';
+const APP_VERSION = '20261102T153000Z';
 const catColor = {
   plan:'var(--violet)', build:'var(--amber)', team:'var(--teal)',
   content:'var(--coral)', admin:'var(--slate)', open:'var(--green)',
@@ -393,6 +393,12 @@ const ONEOFF_BLOCKS = {
   ],
   '2026-11-04': [
     {t:'KC AREA Hang at EKC', s:'12:00', dur:90, cat:'org', central:true},
+  ],
+  '2026-11-05': [
+    {t:'Story Time!', s:'11:00', dur:45, cat:'org', central:true},
+  ],
+  '2026-11-23': [
+    {t:'Ana | Boone 1:1', s:'14:30', dur:30, cat:'org'},
   ],
   '2026-11-09': [
     {t:'Team Lunch IN', s:'11:30', dur:30, cat:'org', central:true},
@@ -532,6 +538,49 @@ const ONEOFF_BLOCKS = {
 // Full one-time day-pattern overrides, keyed by date "YYYY-MM-DD". Used when an entire
 // day's shape (not just an extra meeting) is different from the usual template for one occurrence.
 const DAY_OVERRIDES = {
+  '2026-11-03': [
+    {t:'PLAN | Day', s:'09:00', dur:15, cat:'plan'},
+    {t:'🛠️ BUILD | WKND', s:'09:15', dur:60, cat:'build'},
+    {t:'✨NKC + NLD', s:'09:00', dur:60, cat:'org', central:true},
+    {t:'🛠️ BUILD | Socials', s:'10:15', dur:60, cat:'build'},
+    {t:'MEET | Known', s:'12:00', dur:60, cat:'team'},
+    {t:'Catch Up Boone & Megan', s:'11:30', dur:30, cat:'org'},
+    {t:'ADMIN | PCO', s:'13:00', dur:15, cat:'admin', pco:true},
+    {t:'2027 Mens Event Initial planning meeting', s:'12:30', dur:60, cat:'org', central:true},
+    {t:'CONTENT | Plan', s:'13:15', dur:45, cat:'content'},
+    {t:'MEET | Known', s:'14:30', dur:60, cat:'team'},
+    {t:'🧠 DREAM | Create', s:'15:30', dur:60, cat:'dream'},
+  ],
+  '2026-11-04': [
+    {t:'Family Time', s:'09:00', dur:180, cat:'family'},
+    {t:'PLAN | Day', s:'12:00', dur:15, cat:'plan'},
+    {t:'🛠️ BUILD | Socials', s:'12:15', dur:60, cat:'build'},
+    {t:'Christmas Build Yap', s:'14:00', dur:60, cat:'org', central:true},
+    {t:'ADMIN | Catch Up', s:'15:30', dur:60, cat:'admin'},
+    {t:'PREP | SWITCH', s:'16:30', dur:60, cat:'build'},
+    {t:'REHEARSAL | SWITCH', s:'17:30', dur:75, cat:'build'},
+    {t:'SERVICE | SWITCH', s:'19:00', dur:90, cat:'build'},
+  ],
+  '2026-11-17': [
+    {t:'PLAN | Day', s:'09:00', dur:15, cat:'plan'},
+    {t:'🛠️ BUILD | WKND', s:'09:15', dur:60, cat:'build'},
+    {t:'🛠️ BUILD | Socials', s:'10:15', dur:60, cat:'build'},
+    {t:'MEET | Known', s:'12:00', dur:60, cat:'team'},
+    {t:'ADMIN | PCO', s:'13:00', dur:15, cat:'admin', pco:true},
+    {t:'CONTENT | Plan', s:'13:15', dur:45, cat:'content'},
+    {t:'MEET | Known', s:'14:30', dur:60, cat:'team'},
+    {t:'🧠 DREAM | Create', s:'15:30', dur:60, cat:'dream'},
+  ],
+  '2026-11-19': [
+    {t:'PLAN | Day', s:'09:00', dur:15, cat:'plan'},
+    {t:'🛠️ BUILD | SWITCH', s:'09:15', dur:60, cat:'build'},
+    {t:'🛠️ BUILD | Slides', s:'10:15', dur:60, cat:'build'},
+    {t:'PREP | Weekend', s:'11:15', dur:105, cat:'build'},
+    {t:'ADMIN | PCO', s:'13:00', dur:15, cat:'admin', pco:true},
+    {t:'Team Time', s:'13:00', dur:60, cat:'org', central:true},
+    {t:'Walk Through', s:'14:00', dur:60, cat:'org', central:true},
+    {t:'Mike/Boone 1:1 and Slide Run Through', s:'15:00', dur:60, cat:'org', central:true},
+  ],
   '2026-10-26': [
     {t:'PLAN | Day', s:'09:00', dur:15, cat:'plan'},
     {t:'Team Meeting Extended', s:'10:00', dur:90, cat:'org', central:true},
@@ -562,12 +611,12 @@ const DAY_OVERRIDES = {
   '2026-11-02': [
     {t:'PLAN | Day', s:'09:00', dur:15, cat:'plan'},
     {t:'MEET | PREP', s:'09:15', dur:30, cat:'team'},
+    {t:'Welcome Daniel!', s:'09:15', dur:15, cat:'org', central:true},
     {t:'Team Meeting Locked In', s:'10:00', dur:60, cat:'org', central:true},
     {t:'Team Lunch OUT!', s:'11:00', dur:90, cat:'org', central:true},
     {t:'ADMIN | Schedule', s:'13:00', dur:60, cat:'admin'},
     {t:'Associate Development Time', s:'14:30', dur:60, cat:'org', central:true},
     {t:'Run-Through // ZNR Meetup', s:'15:30', dur:45, cat:'org', central:true},
-    {t:'🟢 OPEN | Flex', s:'15:30', dur:60, cat:'open'},
   ],
   '2026-10-08': [
     {t:'PLAN | Day', s:'09:00', dur:15, cat:'plan'},
