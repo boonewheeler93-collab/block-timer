@@ -302,7 +302,7 @@
 </div>
 
 <script>
-const APP_VERSION = '20261102T160000Z';
+const APP_VERSION = '20261102T163000Z';
 const catColor = {
   plan:'var(--violet)', build:'var(--amber)', team:'var(--teal)',
   content:'var(--coral)', admin:'var(--slate)', open:'var(--green)',
@@ -539,17 +539,8 @@ const ONEOFF_BLOCKS = {
 // day's shape (not just an extra meeting) is different from the usual template for one occurrence.
 const DAY_OVERRIDES = {
   '2026-11-03': [
-    {t:'PLAN | Day', s:'09:00', dur:15, cat:'plan'},
-    {t:'🛠️ BUILD | WKND', s:'09:15', dur:60, cat:'build'},
     {t:'✨NKC + NLD', s:'09:00', dur:60, cat:'org', central:true},
-    {t:'🛠️ BUILD | Socials', s:'10:15', dur:60, cat:'build'},
-    {t:'MEET | Known', s:'12:00', dur:60, cat:'team'},
     {t:'Catch Up Boone & Megan', s:'11:30', dur:30, cat:'org'},
-    {t:'ADMIN | PCO', s:'13:00', dur:15, cat:'admin', pco:true},
-    {t:'2027 Mens Event Initial planning meeting', s:'12:30', dur:60, cat:'org', central:true},
-    {t:'CONTENT | Plan', s:'13:15', dur:45, cat:'content'},
-    {t:'MEET | Known', s:'14:30', dur:60, cat:'team'},
-    {t:'🧠 DREAM | Create', s:'15:30', dur:60, cat:'dream'},
   ],
   '2026-11-04': [
     {t:'Family Time', s:'09:00', dur:180, cat:'family'},
@@ -609,12 +600,8 @@ const DAY_OVERRIDES = {
     {t:'🟢 OPEN | Flex', s:'15:30', dur:60, cat:'open'},
   ],
   '2026-11-02': [
-    {t:'PLAN | Day', s:'09:00', dur:15, cat:'plan'},
-    {t:'MEET | PREP', s:'09:15', dur:30, cat:'team'},
     {t:'Welcome Daniel!', s:'09:15', dur:15, cat:'org', central:true},
     {t:'Team Meeting Locked In', s:'10:00', dur:60, cat:'org', central:true},
-    {t:'ADMIN | Schedule', s:'13:00', dur:60, cat:'admin'},
-    {t:'Associate Development Time', s:'14:30', dur:60, cat:'org', central:true},
     {t:'Run-Through // ZNR Meetup', s:'15:30', dur:45, cat:'org', central:true},
   ],
   '2026-10-08': [
