@@ -302,7 +302,7 @@
 </div>
 
 <script>
-const APP_VERSION = '20261102T163000Z';
+const APP_VERSION = '20261102T180000Z';
 const catColor = {
   plan:'var(--violet)', build:'var(--amber)', team:'var(--teal)',
   content:'var(--coral)', admin:'var(--slate)', open:'var(--green)',
@@ -383,6 +383,8 @@ const SUNDAY_BLOCKS = [
 const ONEOFF_BLOCKS = {
   '2026-11-03': [
     {t:'Banner Revisions', s:'11:00', dur:60, cat:'org', central:true},
+    {t:'\u2728NKC + NLD', s:'09:00', dur:60, cat:'org', central:true},
+    {t:'Catch Up Boone & Megan', s:'11:30', dur:30, cat:'org'},
   ],
   '2026-11-11': [
     {t:'Lunch and Leadership', s:'12:00', dur:60, cat:'org', central:true},
@@ -538,10 +540,6 @@ const ONEOFF_BLOCKS = {
 // Full one-time day-pattern overrides, keyed by date "YYYY-MM-DD". Used when an entire
 // day's shape (not just an extra meeting) is different from the usual template for one occurrence.
 const DAY_OVERRIDES = {
-  '2026-11-03': [
-    {t:'✨NKC + NLD', s:'09:00', dur:60, cat:'org', central:true},
-    {t:'Catch Up Boone & Megan', s:'11:30', dur:30, cat:'org'},
-  ],
   '2026-11-04': [
     {t:'Family Time', s:'09:00', dur:180, cat:'family'},
     {t:'PLAN | Day', s:'12:00', dur:15, cat:'plan'},
