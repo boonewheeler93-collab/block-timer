@@ -302,7 +302,7 @@
 </div>
 
 <script>
-const APP_VERSION = '20261105T133500Z';
+const APP_VERSION = '20261111T190000Z';
 const catColor = {
   plan:'var(--violet)', build:'var(--amber)', team:'var(--teal)',
   content:'var(--coral)', admin:'var(--slate)', open:'var(--green)',
@@ -381,6 +381,10 @@ const SUNDAY_BLOCKS = [
 // One-off, non-recurring confirmed meetings, keyed by date "YYYY-MM-DD".
 // These get merged into that specific day's block list, sorted by start time.
 const ONEOFF_BLOCKS = {
+  '2026-11-24': [
+    {t:'Walk Through (shifted from Thu for Thanksgiving)', s:'14:00', dur:60, cat:'org', central:true},
+    {t:'Mike/Boone 1:1 (shifted from Thu for Thanksgiving)', s:'15:00', dur:60, cat:'org', central:true},
+  ],
   '2026-11-03': [
     {t:'Banner Revisions', s:'11:00', dur:60, cat:'org', central:true},
     {t:'\u2728NKC + NLD', s:'09:00', dur:60, cat:'org', central:true},
@@ -540,6 +544,18 @@ const ONEOFF_BLOCKS = {
 // Full one-time day-pattern overrides, keyed by date "YYYY-MM-DD". Used when an entire
 // day's shape (not just an extra meeting) is different from the usual template for one occurrence.
 const DAY_OVERRIDES = {
+  '2026-11-11': [
+    {t:'Family Time', s:'09:00', dur:180, cat:'family'},
+    {t:'PLAN | Day', s:'12:00', dur:15, cat:'plan'},
+    {t:'🛠️ BUILD | Socials', s:'12:15', dur:60, cat:'build'},
+    {t:'Christmas Meeting - Ben, Boone, Krysten, and Daniel', s:'13:30', dur:30, cat:'org'},
+    {t:'Anne, Ana & Boone', s:'14:00', dur:30, cat:'org'},
+    {t:'Stage time run through for Switch', s:'15:00', dur:30, cat:'org', central:true},
+    {t:'ADMIN | Catch Up', s:'15:30', dur:60, cat:'admin'},
+    {t:'PREP | SWITCH', s:'16:30', dur:60, cat:'build'},
+    {t:'REHEARSAL | SWITCH', s:'17:30', dur:75, cat:'build'},
+    {t:'SERVICE | SWITCH', s:'19:00', dur:90, cat:'build'},
+  ],
   '2026-11-04': [
     {t:'Family Time', s:'09:00', dur:180, cat:'family'},
     {t:'PLAN | Day', s:'12:00', dur:15, cat:'plan'},
@@ -589,10 +605,13 @@ const DAY_OVERRIDES = {
   '2026-11-16': [
     {t:'PLAN | Day', s:'09:00', dur:15, cat:'plan'},
     {t:'MEET | PREP', s:'09:15', dur:30, cat:'team'},
+    {t:'Team Lead (from last week)', s:'09:30', dur:30, cat:'org', central:true},
     {t:'Team Meeting Locked In', s:'10:00', dur:60, cat:'org', central:true},
     {t:'TEAM | Development', s:'11:15', dur:60, cat:'team'},
+    {t:'Team Lunch OUT! (Let\'s Celebrate Anne)', s:'11:00', dur:90, cat:'org', central:true},
     {t:'ADMIN | Schedule', s:'13:00', dur:60, cat:'admin'},
     {t:'ATM Banner Final Approval', s:'13:00', dur:45, cat:'org', central:true},
+    {t:'Christmas - Storage Gathering', s:'12:30', dur:120, cat:'org', central:true},
     {t:'Associate Development- Boone', s:'14:30', dur:60, cat:'org', central:true},
     {t:'Ana | Boone 1:1', s:'14:30', dur:30, cat:'org'},
     {t:'🟢 OPEN | Flex', s:'15:30', dur:60, cat:'open'},
