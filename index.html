@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="theme-color" content="#060914">
+<meta name="theme-color" content="#1a0d08">
 <meta name="apple-mobile-web-app-title" content="Block Timer">
 <title>Block Timer</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -13,11 +13,11 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#060914; --ink:#eef1fb; --ink-dim:#a6afcb; --ink-faint:#7c86a6;
+    --bg:#1a0d08; --ink:#f5ede4; --ink-dim:#c9b6a6; --ink-faint:#9c8778;
     --glass-a: rgba(255,255,255,0.095); --glass-b: rgba(255,255,255,0.04);
     --glass-line: rgba(255,255,255,0.15); --glass-hi: rgba(255,255,255,0.2);
-    --field: rgba(7,10,26,0.55);
-    --accent:#9db0ff; --accent-2:#6fe3ee; --accent-ink:#0a1030;
+    --field: rgba(26,13,8,0.55);
+    --accent:#ffb865; --accent-2:#ff8a5c; --accent-ink:#2b1b00;
     --bg-raised: var(--glass-a); --hairline: var(--glass-line);
     --amber:#ff6a6a; --amber-dim:#5C2A2A;
     --teal:#00B7C3; --coral:#FF8C00; --violet:#9db0ff;
@@ -26,6 +26,7 @@
     --danger:#ff9d8a;
     --display:'Fraunces','Iowan Old Style',Georgia,serif;
     --body:'Manrope','Helvetica Neue',Arial,sans-serif;
+    --clockfont: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', 'Helvetica Neue', Arial, sans-serif;
     color-scheme: dark;
     box-sizing:border-box;
     padding-top: env(safe-area-inset-top, 0px);
@@ -41,10 +42,10 @@
   body::before{
     content:""; position:fixed; inset:-12%; z-index:-1; pointer-events:none;
     background:
-      radial-gradient(52% 42% at 12% 6%, rgba(104,98,255,0.5), transparent 62%),
-      radial-gradient(44% 38% at 92% 18%, rgba(46,206,232,0.24), transparent 62%),
-      radial-gradient(50% 44% at 74% 98%, rgba(228,74,150,0.22), transparent 62%),
-      radial-gradient(40% 36% at 6% 80%, rgba(60,90,220,0.25), transparent 62%);
+      radial-gradient(52% 42% at 12% 6%, rgba(168,0,0,0.45), transparent 62%),
+      radial-gradient(44% 38% at 92% 18%, rgba(255,140,0,0.22), transparent 62%),
+      radial-gradient(50% 44% at 74% 98%, rgba(255,79,163,0.2), transparent 62%),
+      radial-gradient(40% 36% at 6% 80%, rgba(255,200,61,0.2), transparent 62%);
   }
   .glass, .clock-panel, .auto-toggle, .timer-panel{
     background: linear-gradient(180deg, var(--glass-a), var(--glass-b));
@@ -73,19 +74,19 @@
     font-size:19px; cursor:pointer; display:flex; align-items:center; justify-content:center;
     margin-top:2px; transition: background 0.2s ease;
   }
-  .sync-btn:active{ background: linear-gradient(135deg, #b6c4ff, #8fe8f2); color:var(--accent-ink); transform:rotate(45deg); }
+  .sync-btn:active{ background: linear-gradient(135deg, #ffd89a, #ffb865); color:var(--accent-ink); transform:rotate(45deg); }
   @keyframes spin-sync{ from{ transform:rotate(0deg); } to{ transform:rotate(360deg); } }
   .sync-btn.spinning{ animation: spin-sync 0.6s linear infinite; }
   .masthead-btns{ display:flex; gap:8px; }
   .ask-claude-btn{ font-size:17px; }
-  .ask-claude-btn:active{ background: linear-gradient(135deg, #b6c4ff, #8fe8f2); color:var(--accent-ink); }
+  .ask-claude-btn:active{ background: linear-gradient(135deg, #ffd89a, #ffb865); color:var(--accent-ink); }
 
   .clock-panel{
     border-radius:22px;
     padding:18px 16px; text-align:center; margin-bottom:18px;
   }
   .clock-label{ font-size:10.5px; font-weight:700; color:var(--ink-faint); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:6px; }
-  .clock-display{ font-family:var(--display); font-weight:500; font-size:42px; letter-spacing:-0.01em; color:var(--ink); }
+  .clock-display{ font-family:var(--clockfont); font-weight:600; font-size:44px; letter-spacing:-0.01em; color:var(--ink); font-variant-numeric:tabular-nums; font-feature-settings:"tnum" 1; }
   .clock-ampm{ font-size:17px; font-weight:600; color:var(--ink-dim); letter-spacing:0.03em; }
   .clock-date{ font-size:11.5px; font-weight:600; color:var(--ink-dim); margin-top:6px; }
 
@@ -98,7 +99,8 @@
     font-weight:700; font-size:13px; padding:9px 16px; border-radius:12px; cursor:pointer;
   }
   .week-nav .week-range{
-    font-size:12px; font-weight:600; color:var(--ink-dim); text-align:center; flex:1;
+    font-family:var(--clockfont); font-size:12px; font-weight:600; color:var(--ink-dim); text-align:center; flex:1;
+    font-variant-numeric:tabular-nums;
   }
 
   .tabs{ display:flex; gap:4px; margin-bottom:16px; flex-wrap:wrap; padding:4px; border-radius:18px; background:rgba(255,255,255,0.03); }
@@ -109,11 +111,11 @@
     background:transparent; color:var(--ink-dim); border:1px solid transparent;
     display:flex; flex-direction:column; align-items:center; line-height:1.2;
   }
-  .tab .tab-date{ font-size:9px; font-weight:600; margin-top:1px; opacity:0.7; }
+  .tab .tab-date{ font-family:var(--clockfont); font-size:9px; font-weight:600; margin-top:1px; opacity:0.7; font-variant-numeric:tabular-nums; }
   .tab.active{
     color:var(--accent-ink);
-    background: linear-gradient(135deg, #b6c4ff, #8fe8f2);
-    box-shadow: 0 8px 24px -10px rgba(143,200,255,0.8);
+    background: linear-gradient(135deg, #ffd89a, #ffb865);
+    box-shadow: 0 8px 24px -10px rgba(255,184,101,0.8);
     border-color:transparent;
   }
   .tab.active .tab-date{ color:rgba(10,16,48,0.7); opacity:1; }
@@ -163,8 +165,8 @@
     padding:2px 4px; overflow:hidden;
   }
   .bi-pco-badge img{ height:100%; width:auto; object-fit:contain; display:block; }
-  .block-item .bi-time{ font-size:11px; font-weight:600; color:var(--ink-dim); margin-top:2px; }
-  .block-item .bi-dur{ font-size:12px; font-weight:700; color:var(--ink-2,var(--ink-dim)); white-space:nowrap; padding-left:10px; }
+  .block-item .bi-time{ font-family:var(--clockfont); font-size:11px; font-weight:600; color:var(--ink-dim); margin-top:2px; font-variant-numeric:tabular-nums; }
+  .block-item .bi-dur{ font-family:var(--clockfont); font-size:12px; font-weight:700; color:var(--ink-2,var(--ink-dim)); white-space:nowrap; padding-left:10px; font-variant-numeric:tabular-nums; }
 
   .timer-panel{
     border-radius:24px;
@@ -178,8 +180,8 @@
 
   .timer-label{ font-size:12px; font-weight:700; color:var(--ink-dim); text-transform:uppercase; letter-spacing:0.05em; margin-bottom:8px; }
   .timer-display{
-    font-family:var(--display); font-weight:500; font-size:clamp(2.8rem,15vw,3.6rem); letter-spacing:-0.02em;
-    color:var(--ink); line-height:1;
+    font-family:var(--clockfont); font-weight:700; font-size:clamp(2.8rem,15vw,3.6rem); letter-spacing:-0.01em;
+    color:var(--ink); line-height:1; font-variant-numeric:tabular-nums; font-feature-settings:"tnum" 1;
   }
   .timer-display.warning{ color:var(--slate); }
   .timer-display.orange{ color:var(--coral); }
@@ -204,7 +206,7 @@
     flex:1 1 calc(50% - 5px); padding:14px 8px; border-radius:14px; border:none; cursor:pointer;
     font-weight:700; font-size:15px; letter-spacing:0.01em;
   }
-  .btn-start{ color:var(--accent-ink); background: linear-gradient(135deg, #b6c4ff, #8fe8f2); box-shadow: 0 10px 26px -12px rgba(143,200,255,0.9); }
+  .btn-start{ color:var(--accent-ink); background: linear-gradient(135deg, #ffd89a, #ffb865); box-shadow: 0 10px 26px -12px rgba(255,184,101,0.9); }
   .btn-pause{ color:var(--ink); background:rgba(255,255,255,0.09); border:1px solid var(--glass-line); }
   .btn-reset{ background:transparent; color:var(--ink-dim); border:1px solid var(--glass-line); }
   .btn-complete{ background:transparent; color:var(--green); border:1px solid rgba(127,227,180,0.5); }
@@ -228,7 +230,7 @@
     position:relative; overflow:hidden;
     padding:15px 6px; border-radius:14px; border:1px solid var(--glass-line);
     background: linear-gradient(180deg, var(--glass-a), var(--glass-b)); color:var(--ink); cursor:pointer;
-    font-weight:700; font-size:15px; text-align:center;
+    font-family:var(--clockfont); font-weight:700; font-size:15px; text-align:center; font-variant-numeric:tabular-nums;
   }
   .qt-fill{
     position:absolute; top:0; left:0; bottom:0; width:0%;
@@ -239,7 +241,7 @@
   .qt-fill.orange{ background:var(--coral); }
   .qt-fill.critical, .qt-fill.overtime{ background:var(--danger); }
   .qt-btn-label{ position:relative; z-index:1; }
-  .qt-btn:active{ background: linear-gradient(135deg, #b6c4ff, #8fe8f2); color:var(--accent-ink); }
+  .qt-btn:active{ background: linear-gradient(135deg, #ffd89a, #ffb865); color:var(--accent-ink); }
   @media (prefers-reduced-motion: reduce){ *{ transition:none !important; animation:none !important; } }
   @media (min-width: 900px){
     .wrap{
@@ -341,7 +343,7 @@
 </div>
 
 <script>
-const APP_VERSION = '20261117T220000Z';
+const APP_VERSION = '20261117T230000Z';
 const catColor = {
   plan:'var(--violet)', build:'var(--amber)', team:'var(--teal)',
   content:'var(--coral)', admin:'var(--slate)', open:'var(--green)',
