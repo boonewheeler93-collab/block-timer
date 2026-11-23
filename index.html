@@ -343,7 +343,7 @@
 </div>
 
 <script>
-const APP_VERSION = '20261122T063500Z';
+const APP_VERSION = '20261123T150000Z';
 const catColor = {
   plan:'var(--violet)', build:'var(--amber)', team:'var(--teal)',
   content:'var(--coral)', admin:'var(--slate)', open:'var(--green)',
@@ -425,6 +425,13 @@ const ONEOFF_BLOCKS = {
   '2026-11-24': [
     {t:'Walk Through (shifted from Thu for Thanksgiving)', s:'14:00', dur:60, cat:'org', central:true},
     {t:'Mike/Boone 1:1 (shifted from Thu for Thanksgiving)', s:'15:00', dur:60, cat:'org', central:true},
+    {t:'Comm Practice- AHOD', s:'10:00', dur:90, cat:'org', central:true},
+  ],
+  '2026-11-30': [
+    {t:'Team Lunch OUT!', s:'11:00', dur:90, cat:'org', central:true},
+  ],
+  '2026-12-01': [
+    {t:'Setup EOY Celebration- AND Aud Runthrough', s:'10:00', dur:60, cat:'org', central:true},
   ],
   '2026-11-03': [
     {t:'Banner Revisions', s:'11:00', dur:60, cat:'org', central:true},
@@ -447,6 +454,9 @@ const ONEOFF_BLOCKS = {
   '2026-11-23': [
     {t:'Ana | Boone 1:1', s:'14:30', dur:30, cat:'org'},
     {t:'Team Lunch IN', s:'11:30', dur:30, cat:'org', central:true},
+    {t:'Talk Through Slides/Order of Service for EOY', s:'09:00', dur:30, cat:'org', central:true},
+    {t:'Help Kyla Move!', s:'12:00', dur:180, cat:'org', central:true},
+    {t:'Boone/Steph', s:'16:15', dur:30, cat:'org', central:true},
   ],
   '2026-11-09': [
     {t:'Team Lunch IN', s:'11:30', dur:30, cat:'org', central:true},
@@ -586,6 +596,15 @@ const ONEOFF_BLOCKS = {
 // Full one-time day-pattern overrides, keyed by date "YYYY-MM-DD". Used when an entire
 // day's shape (not just an extra meeting) is different from the usual template for one occurrence.
 const DAY_OVERRIDES = {
+  '2026-11-30': [
+    {t:'PLAN | Day', s:'09:00', dur:15, cat:'plan'},
+    {t:'MEET | PREP', s:'09:15', dur:30, cat:'team'},
+    {t:'Team Meeting Locked In', s:'10:00', dur:60, cat:'org', central:true},
+    {t:'TEAM | Development', s:'11:15', dur:60, cat:'team'},
+    {t:'ADMIN | Schedule', s:'13:00', dur:60, cat:'admin'},
+    {t:'Associate Development- Kirsten', s:'14:30', dur:60, cat:'org', central:true},
+    {t:'🟢 OPEN | Flex', s:'15:30', dur:60, cat:'open'},
+  ],
   '2026-11-26': [
     {t:'PLAN | Day', s:'09:00', dur:15, cat:'plan'},
     {t:'🛠️ BUILD | SWITCH', s:'09:15', dur:60, cat:'build'},
